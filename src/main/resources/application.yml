@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: ${AWS_DB_URL}
-    username: ${AWS_DB_USERNAME}
-    password: ${AWS_DB_PASSWORD}
+    url: jdbc:mysql://umc-db.clum6u48wd0b.ap-northeast-2.rds.amazonaws.com/umc
+    username: root
+    password: umcteame
     driver-class-name: com.mysql.cj.jdbc.Driver
   sql:
     init:

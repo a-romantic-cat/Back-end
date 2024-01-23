@@ -20,19 +20,6 @@ jobs:
           java-version: 17 # (5).자바 설치
           distribution: 'adopt'
 
-      - name: Access Secrets
-        with:
-          files: ./Back-end/src/main/resources/application.yml
-        env:
-          AWS_DB_URL: ${{ secrets.AWS_DB_URL }}
-          AWS_DB_USERNAME: ${{ secrets.AWS_DB_USERNAME }}
-          AWS_DB_PASSWORD: ${{ secrets.AWS_DB_PASSWORD }}
-        run: |
-          echo "spring.datasource.url=${AWS_DB_URL}" >> $GITHUB_ENV
-          echo "spring.datasource.username=${AWS_DB_USERNAME}" >> $GITHUB_ENV
-          echo "spring.datasource.password=${AWS_DB_PASSWORD}" >> $GITHUB_ENV
-
-
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
         shell: bash # (6).권한 부여
