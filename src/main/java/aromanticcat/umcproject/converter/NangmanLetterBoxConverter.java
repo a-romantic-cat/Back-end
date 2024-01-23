@@ -1,5 +1,6 @@
 package aromanticcat.umcproject.converter;
 
+import aromanticcat.umcproject.entity.Member;
 import aromanticcat.umcproject.entity.NangmanLetter;
 import aromanticcat.umcproject.entity.NangmanReply;
 import aromanticcat.umcproject.web.dto.nangmanLetterBox.NangmanLetterBoxRequestDTO;
@@ -16,12 +17,13 @@ public class NangmanLetterBoxConverter {
                 .build();
     }
 
-    public static NangmanLetter toNangmanLetter(NangmanLetterBoxRequestDTO.WriteLetterDTO request){
+    public static NangmanLetter toNangmanLetter(NangmanLetterBoxRequestDTO.WriteLetterDTO request, Member member){
+
         return NangmanLetter.builder()
                 .isPublic(request.getIsPublic())
                 .content(request.getContent())
                 .senderNickname(request.getSenderRandomNickname())
-//                .member(request.getMember())
+                .member(member)
                 .build();
     }
 
@@ -46,12 +48,12 @@ public class NangmanLetterBoxConverter {
                 .build();
     }
 
-    public static NangmanReply toNangmanReply(NangmanLetterBoxRequestDTO.WriteReplyDTO request, NangmanLetter nangmanLetter){
+    public static NangmanReply toNangmanReply(NangmanLetterBoxRequestDTO.WriteReplyDTO request, NangmanLetter nangmanLetter, Member member){
         return NangmanReply.builder()
                 .content(request.getReplyContent())
                 .replySenderNickname(request.getReplySenderNickname())
                 .nangmanLetter(nangmanLetter)
-//                .member(request.getMember())
+                .member(member)
                 .build();
 
     }

@@ -1,6 +1,7 @@
 package aromanticcat.umcproject.service;
 
 import aromanticcat.umcproject.converter.NangmanLetterBoxConverter;
+import aromanticcat.umcproject.entity.Member;
 import aromanticcat.umcproject.entity.NangmanLetter;
 import aromanticcat.umcproject.entity.NangmanReply;
 import aromanticcat.umcproject.repository.MemberRepository;
@@ -26,7 +27,10 @@ public class NangmanLetterBoxServiceImpl implements NangmanLetterBoxService {
     @Override
     @Transactional
     public NangmanLetter writeAndSendLetter(NangmanLetterBoxRequestDTO.WriteLetterDTO request){
-        NangmanLetter newNangmanLetter = NangmanLetterBoxConverter.toNangmanLetter(request);
+        //멤버 엔티티 조회
+        Member member = memberRepository.findById(request.getMemberId()).orElseThrow(() -> new RuntimeException("멤버를 찾을 수 없습니다. ID: " + request.getMemberId()));
+
+        NangmanLetter newNangmanLetter = NangmanLetterBoxConverter.toNangmanLetter(request, member);
 
         return nangmanLetterRepository.save(newNangmanLetter);
     }
@@ -58,8 +62,11 @@ public class NangmanLetterBoxServiceImpl implements NangmanLetterBoxService {
         //특정 편지에 대한 정보 조회
         NangmanLetter nangmanLetter = getLetterById(nangmanLetterId);
 
+        //멤버 엔티티 조회
+        Member member = memberRepository.findById(request.getMemberId()).orElseThrow(() -> new RuntimeException("멤버를 찾을 수 없습니다. ID: " + request.getMemberId()));
+
         //답장 작성 및 발송
-        NangmanReply newNangmanReply = NangmanLetterBoxConverter.toNangmanReply(request, nangmanLetter);
+        NangmanReply newNangmanReply = NangmanLetterBoxConverter.toNangmanReply(request, nangmanLetter, member);
 
         //편지 답장 상태 업데이트
         nangmanLetter.setHasResponse(true);
