@@ -13,7 +13,7 @@ public class NangmanLetterBoxResponseDTO {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class WriteLetterResultDTO { // 편지 발송 후 응답
+    public static class SendLetterResultDTO { // 편지 발송 후 응답
 
         private Long nangmanLetterId;
 
