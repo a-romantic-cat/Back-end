@@ -185,15 +185,19 @@ public class NangmanLetterBoxController {
     public ApiResponse<List<NangmanLetterBoxResponseDTO.PreviewBothResultDTO>> getMyNangmanReplies(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "6") int pageSize) {
-        // 현재 로그인된 사용자의 ID 또는 정보를 얻어온다고 가정
-        // SecurityContextHolder에서 현재 사용자의 정보를 가져오는 방법
-        Long userId = getCurrentUserId(); // 로그인한 사용자의 아이디를 가져오는 메서드
+        try{
+            // 현재 로그인된 사용자의 ID 또는 정보를 얻어온다고 가정
+            // SecurityContextHolder에서 현재 사용자의 정보를 가져오는 방법
+            Long userId = getCurrentUserId(); // 로그인한 사용자의 아이디를 가져오는 메서드
 
-        // 사용자가 답장한 목록 조회
-        List<NangmanLetterBoxResponseDTO.PreviewBothResultDTO> userReplyList = nangmanLetterBoxService.getMyReplyList(userId,  page, pageSize);
+            // 사용자가 답장한 목록 조회
+            List<NangmanLetterBoxResponseDTO.PreviewBothResultDTO> userReplyList = nangmanLetterBoxService.getMyReplyList(userId,  page, pageSize);
 
-        // 성공 응답 생성
-        return ApiResponse.onSuccess(userReplyList);
+            // 성공 응답 생성
+            return ApiResponse.onSuccess(userReplyList);
+        }catch (Exception e){
+            return ApiResponse.onFailure(HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage(), null);
+        }
     }
 
     //스프링 시큐리티 구현되기 전이라 임시 메서드입니다.
