@@ -14,4 +14,6 @@ public interface NangmanLetterRepository extends JpaRepository<NangmanLetter, Lo
     Page<NangmanLetter> findByMemberId(Long memberId, Pageable pageable);
 
     Optional<NangmanLetter> findByMemberIdAndId(Long memberId, Long Id);
+
+    Page<NangmanLetter> findByIsPublicTrueAndHasResponseTrue(Pageable pageable);
 }
