@@ -28,7 +28,6 @@ public class NangmanLetterBoxServiceImpl implements NangmanLetterBoxService {
 
     private final NangmanLetterRepository nangmanLetterRepository;
     private final MemberRepository memberRepository;
-    private final RandomNicknameService randomNicknameService;
     private final NangmanReplyRepository nangmanReplyRepository;
     @Override
     @Transactional
