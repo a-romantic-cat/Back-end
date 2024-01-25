@@ -44,6 +44,8 @@ public class NangmanLetterBoxResponseDTO {
         private Long nangmanReplyId;
 
         private String preview;
+
+        private Integer totalEmojiCount;
     }
 
     @Getter

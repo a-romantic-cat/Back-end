@@ -69,6 +69,7 @@ public class NangmanLetterBoxConverter {
                 .nangmanReplyId(nangmanReply.getId())
                 .nangmanLetterId(nangmanReply.getNangmanLetter().getId())
                 .preview(getPreviewText(nangmanReply.getContent()))
+                .totalEmojiCount(calculateTotalEmojiCount(nangmanReply.getNangmanLetter()))
                 .build();
 
     }
