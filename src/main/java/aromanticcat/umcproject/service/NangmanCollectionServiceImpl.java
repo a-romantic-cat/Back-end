@@ -54,4 +54,33 @@ public class NangmanCollectionServiceImpl implements NangmanCollectionService{
 
         return NangmanLetterBoxConverter.toBothResultDTO(nangmanLetter, nangmanReply);
     }
+
+
+    @Override
+    @Transactional
+    public void likeCollection(Long nangmanLetterId, String emojiType){
+        NangmanLetter nangmanLetter = nangmanLetterRepository.findByIsPublicTrueAndHasResponseTrueAndId(nangmanLetterId);
+        if(nangmanLetter == null){
+            throw new RuntimeException("편지를 찾을 수 없습니다. ID: " + nangmanLetterId);
+        }
+
+        if(!isValidEmojiType(emojiType)){
+            throw new IllegalArgumentException("유효하지 않은 emojiType 입니다. emojiType: " + emojiType);
+        }
+
+        nangmanLetter.increaseEmojiCount(emojiType);
+
+        nangmanLetterRepository.save(nangmanLetter);
+
+    }
+
+    // 유효하지 않은 emojiType인지 확인하는 메서드
+    private boolean isValidEmojiType(String emojiType) {
+        return emojiType.equals("thumbsUp") ||
+                emojiType.equals("heart") ||
+                emojiType.equals("cry") ||
+                emojiType.equals("clover") ||
+                emojiType.equals("clap") ||
+                emojiType.equals("star");
+    }
 }

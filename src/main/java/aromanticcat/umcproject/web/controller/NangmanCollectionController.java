@@ -49,6 +49,17 @@ public class NangmanCollectionController {
         }
     }
 
+    @PostMapping("/{nangmanLetterId}/like")
+    @Operation(summary = "공감 이모지 카운트 증가 API",
+                description = "'thumbsUp', 'heart', 'cry', 'clover', 'clap', 'star' 중 하나의 값을 emojiType으로 전달하여 해당 이모지 카운트를 증가시킵니다.")
+    public ApiResponse<String> CollectionLike(@PathVariable Long nangmanLetterId, @RequestParam String emojiType){
+        try{
+            nangmanCollectionService.likeCollection(nangmanLetterId, emojiType);
 
+            return ApiResponse.onSuccess("공감이 성공적으로 반영되었습니다.");
 
+        }catch (Exception e) {
+            return ApiResponse.onFailure(HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage(), null);
+        }
+    }
 }
