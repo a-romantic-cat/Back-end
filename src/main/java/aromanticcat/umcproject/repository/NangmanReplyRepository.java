@@ -12,4 +12,6 @@ public interface NangmanReplyRepository extends JpaRepository<NangmanReply, Long
     boolean existsByMemberIdAndCreatedAtBetween(Long memberId, LocalDateTime start, LocalDateTime end);
 
     Page<NangmanReply> findByMemberId(Long memberId, Pageable pageable);
+
+    NangmanReply findByNangmanLetter_Id(Long nangmanLetterId);
 }

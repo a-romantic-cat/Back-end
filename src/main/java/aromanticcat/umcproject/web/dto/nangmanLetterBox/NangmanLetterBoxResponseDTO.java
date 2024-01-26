@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-public class NangmanLetterBoxResponseDTO {
+public class  NangmanLetterBoxResponseDTO {
 
     @Getter
     @Builder
@@ -87,5 +87,18 @@ public class NangmanLetterBoxResponseDTO {
         private Long nangmanReplyId;
         private String replySenderNickname;
         LocalDateTime createdAt;
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class BothResultDTO { // 편지 + 답장 상세 응답
+        private Long nangmanLetterId;
+        private String letterContent;
+        private String senderNickname;
+        private Long nangmanReplyId;
+        private String replyContent;
+        private String replySenderNickname;
     }
 }

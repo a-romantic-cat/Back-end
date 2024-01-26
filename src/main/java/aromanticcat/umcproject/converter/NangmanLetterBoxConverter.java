@@ -117,4 +117,15 @@ public class NangmanLetterBoxConverter {
         return thumbsUpCnt + heartCnt + cryingCnt + cloverCnt + clapCnt + starCnt;
 
     }
+
+    public static NangmanLetterBoxResponseDTO.BothResultDTO toBothResultDTO(NangmanLetter nangmanLetter, NangmanReply nangmanReply){
+        return NangmanLetterBoxResponseDTO.BothResultDTO.builder()
+                .nangmanLetterId(nangmanLetter.getId())
+                .letterContent(nangmanLetter.getContent())
+                .senderNickname(nangmanLetter.getSenderNickname())
+                .nangmanReplyId(nangmanReply.getId())
+                .replyContent(nangmanReply.getContent())
+                .replySenderNickname(nangmanReply.getReplySenderNickname())
+                .build();
+    }
 }
