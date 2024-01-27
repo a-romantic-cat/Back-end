@@ -16,7 +16,7 @@ public class LetterPaper extends BaseEntity {
     private Long id;
 
     @NotNull
-    private String image_url;
+    private String imageUrl;
 
     @NotNull
     private String name;

@@ -16,7 +16,7 @@ public class Stamp extends BaseEntity {
     private Long Id;
 
     @NotNull
-    private String image_url;
+    private String imageUrl;
 
     @NotNull
     private String name;
