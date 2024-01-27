@@ -21,8 +21,6 @@ public class StoreResponseDTO {
 
         private String letterPaperName;
 
-        private boolean isAcquired;
-
         private Integer price;
 
         private LocalDateTime createdAt;
@@ -40,7 +38,7 @@ public class StoreResponseDTO {
 
         private String stampName;
 
-        private boolean isAcquired;
+        private Integer price;
 
         private LocalDateTime createdAt;
     }
