@@ -13,13 +13,16 @@ public class LetterPaper extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long letter_paper_id;
+    private Long id;
 
     @NotNull
     private String image_url;
 
     @NotNull
     private String name;
+
+    @NotNull
+    private Integer price;
 
     @OneToMany(mappedBy = "letterPaper")
     private List<Letter> letters;
