@@ -2,7 +2,7 @@ package aromanticcat.umcproject.web.controller;
 
 
 import aromanticcat.umcproject.apiPayload.ApiResponse;
-import aromanticcat.umcproject.service.NangmanCollectionService;
+import aromanticcat.umcproject.service.nangmanLetterBoxService.NangmanCollectionService;
 import aromanticcat.umcproject.web.dto.nangmanLetterBox.NangmanLetterBoxResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;

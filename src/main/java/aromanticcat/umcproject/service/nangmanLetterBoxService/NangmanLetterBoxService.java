@@ -1,4 +1,4 @@
-package aromanticcat.umcproject.service;
+package aromanticcat.umcproject.service.nangmanLetterBoxService;
 
 import aromanticcat.umcproject.entity.NangmanLetter;
 import aromanticcat.umcproject.entity.NangmanReply;

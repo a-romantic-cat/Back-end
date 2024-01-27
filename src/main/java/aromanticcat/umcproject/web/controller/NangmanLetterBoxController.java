@@ -4,7 +4,7 @@ import aromanticcat.umcproject.apiPayload.ApiResponse;
 import aromanticcat.umcproject.converter.NangmanLetterBoxConverter;
 import aromanticcat.umcproject.entity.NangmanLetter;
 import aromanticcat.umcproject.entity.NangmanReply;
-import aromanticcat.umcproject.service.NangmanLetterBoxService;
+import aromanticcat.umcproject.service.nangmanLetterBoxService.NangmanLetterBoxService;
 import aromanticcat.umcproject.service.RandomNicknameService;
 import aromanticcat.umcproject.web.dto.nangmanLetterBox.NangmanLetterBoxRequestDTO;
 import aromanticcat.umcproject.web.dto.nangmanLetterBox.NangmanLetterBoxResponseDTO;
