@@ -3,7 +3,6 @@ package aromanticcat.umcproject.web.controller;
 
 import aromanticcat.umcproject.apiPayload.ApiResponse;
 import aromanticcat.umcproject.service.NangmanCollectionService;
-import aromanticcat.umcproject.service.NangmanLetterBoxService;
 import aromanticcat.umcproject.web.dto.nangmanLetterBox.NangmanLetterBoxResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,6 @@ import java.util.List;
 public class NangmanCollectionController {
 
     private final NangmanCollectionService nangmanCollectionService;
-    private final NangmanLetterBoxService nangmanLetterBoxService;
 
     @GetMapping("/")
     @Operation(summary = "낭만모음집 목록 조회 API",
