@@ -21,7 +21,7 @@ public class StoreController {
     private final StoreService storeService;
 
     @GetMapping("/letter-papers")
-    @Operation(summary = "상점 전체 편지지 목록 조회 API",
+    @Operation(summary = "상점 편지지 목록 조회 API",
             description = "사용자가 이미 구매한 편지지는 가격을 null로 반환합니다." +
                         "페이징을 포함합니다. query String으로 page(기본값 0)와 pageSize(기본값 12)를 주세요." +
                         "구매한 편지지만 보려면 query String으로 purchasedOnly(기본값 false)를 true로 주세요.")
@@ -42,17 +42,19 @@ public class StoreController {
     }
 
     @GetMapping("/stamps")
-    @Operation(summary = "상점 전체 우표 목록 조회 API",
+    @Operation(summary = "상점 우표 목록 조회 API",
             description = "사용자가 이미 구매한 우표는 가격을 null로 반환합니다." +
-                    "페이징을 포함합니다. query String으로 page(기본값 0)와 pageSize(기본값 12)를 주세요.")
+                    "페이징을 포함합니다. query String으로 page(기본값 0)와 pageSize(기본값 12)를 주세요." +
+                    "구매한 우표만 보려면 query String으로 purchasedOnly(기본값 false)를 true로 주세요.")
     public ApiResponse<List<StoreResponseDTO.StampResultDTO>> getAllStampList(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "12") int pageSize) {
+            @RequestParam(defaultValue = "12") int pageSize,
+            @RequestParam(defaultValue = "false") boolean purchasedOnly) {
         try{
             // 로그인한 사용자의 아이디를 가져오는 메서드
             Long userId = getCurrentUserId();
 
-            List<StoreResponseDTO.StampResultDTO> stampList = storeService.findStampList(userId, page, pageSize);
+            List<StoreResponseDTO.StampResultDTO> stampList = storeService.findStampList(userId, page, pageSize, purchasedOnly);
 
             return ApiResponse.onSuccess(stampList);
         } catch (Exception e){

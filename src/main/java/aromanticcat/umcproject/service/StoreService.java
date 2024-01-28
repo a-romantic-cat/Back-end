@@ -8,6 +8,6 @@ public interface StoreService {
 
     List<StoreResponseDTO.LetterPaperResultDTO> findLetterPaperList(Long memberId, int page, int pageSize, boolean purchasedOnly);
 
-    List<StoreResponseDTO.StampResultDTO> findStampList(Long memberId, int page, int pageSize);
+    List<StoreResponseDTO.StampResultDTO> findStampList(Long memberId, int page, int pageSize, boolean purchasedOnly);
 
 }

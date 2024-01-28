@@ -23,7 +23,7 @@ public class StoreConverter {
                 .build();
     }
 
-    public static StoreResponseDTO.LetterPaperResultDTO toAcquiedLetterPaperResultDTO(AcquiredItem letterPaper){
+    public static StoreResponseDTO.LetterPaperResultDTO toAcquiredLetterPaperResultDTO(AcquiredItem letterPaper){
         return StoreResponseDTO.LetterPaperResultDTO.builder()
                 .letterPaperId(letterPaper.getLetterPaper().getId())
                 .letterPaperName(letterPaper.getLetterPaper().getName())
@@ -44,6 +44,16 @@ public class StoreConverter {
                 .stampImageUrl(stamp.getImageUrl())
                 .price(price)
                 .createdAt(stamp.getCreatedAt())
+                .build();
+    }
+
+    public static StoreResponseDTO.StampResultDTO toAcquiredStampResultDTO(AcquiredItem stamp){
+        return StoreResponseDTO.StampResultDTO.builder()
+                .stampId(stamp.getStamp().getId())
+                .stampName(stamp.getStamp().getName())
+                .stampImageUrl(stamp.getStamp().getImageUrl())
+                .price(null)
+                .createdAt(stamp.getStamp().getCreatedAt())
                 .build();
     }
 

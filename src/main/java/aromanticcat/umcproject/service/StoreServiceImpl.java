@@ -40,7 +40,7 @@ public class StoreServiceImpl implements StoreService{
             List<AcquiredItem> acquiredLetterPaperList = acquiredLetterPaperPage.getContent();
 
             List<StoreResponseDTO.LetterPaperResultDTO> responseDTOs = acquiredLetterPaperList.stream()
-                    .map(letterPaper -> StoreConverter.toAcquiedLetterPaperResultDTO(letterPaper))
+                    .map(letterPaper -> StoreConverter.toAcquiredLetterPaperResultDTO(letterPaper))
                     .collect(Collectors.toList());
             return responseDTOs;
         } else {
@@ -64,22 +64,35 @@ public class StoreServiceImpl implements StoreService{
 
     @Override
     @Transactional
-    public List<StoreResponseDTO.StampResultDTO> findStampList(Long memberId, int page, int pageSize){
-
-        // 사용자가 구매한 편지지 목록 조회
-        List<AcquiredItem> acquiredItemist = acquiredItemRepository.findByMemberId(memberId);
-
-
-        // 모든 우표 목록 조회
+    public List<StoreResponseDTO.StampResultDTO> findStampList(Long memberId, int page, int pageSize, boolean purchasedOnly){
         Pageable pageable = PageRequest.of(page, pageSize);
-        Page<Stamp> allStampPage = stampRepository.findAll(pageable);
 
-        List<Stamp> allStampList = allStampPage.getContent();
+        if(purchasedOnly){
+            // 사용자가 구매한 우표 목록 조회
+            Page<AcquiredItem> acquiredStampPage = acquiredItemRepository.findByMemberIdAndStampIdIsNotNull(memberId, pageable);
 
-        List<StoreResponseDTO.StampResultDTO> responseDTOs = allStampList.stream()
-                .map(stamp -> StoreConverter.toStampResultDTO(stamp, acquiredItemist))
-                .collect(Collectors.toList());
+            List<AcquiredItem> acquiredStampList = acquiredStampPage.getContent();
 
-        return responseDTOs;
+            List<StoreResponseDTO.StampResultDTO> responseDTOs = acquiredStampList.stream()
+                    .map(stamp -> StoreConverter.toAcquiredStampResultDTO(stamp))
+                    .collect(Collectors.toList());
+            return responseDTOs;
+        } else{
+            // 사용자가 구매한 아이템 목록 조회
+            List<AcquiredItem> acquiredItemist = acquiredItemRepository.findByMemberId(memberId);
+
+
+            // 모든 우표 목록 조회
+            Page<Stamp> allStampPage = stampRepository.findAll(pageable);
+
+            List<Stamp> allStampList = allStampPage.getContent();
+
+            List<StoreResponseDTO.StampResultDTO> responseDTOs = allStampList.stream()
+                    .map(stamp -> StoreConverter.toStampResultDTO(stamp, acquiredItemist))
+                    .collect(Collectors.toList());
+
+            return responseDTOs;
+        }
+
     }
 }
