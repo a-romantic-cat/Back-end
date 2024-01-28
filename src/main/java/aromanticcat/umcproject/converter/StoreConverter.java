@@ -2,6 +2,7 @@ package aromanticcat.umcproject.converter;
 
 import aromanticcat.umcproject.entity.AcquiredItem;
 import aromanticcat.umcproject.entity.LetterPaper;
+import aromanticcat.umcproject.entity.Member;
 import aromanticcat.umcproject.entity.Stamp;
 import aromanticcat.umcproject.web.dto.store.StoreResponseDTO;
 
@@ -57,19 +58,31 @@ public class StoreConverter {
                 .build();
     }
 
-    private static <T> boolean isItemAcquired(T item, List<AcquiredItem> acquiredItemList) {
-
-        if (item instanceof LetterPaper) {
-            Long itemId = ((LetterPaper) item).getId();
-            return acquiredItemList.stream()
-                    .anyMatch(acquiredItem -> acquiredItem.getLetterPaper() != null && acquiredItem.getLetterPaper().getId().equals(itemId));
-
-        } else if (item instanceof Stamp) {
-            Long itemId = ((Stamp) item).getId();
-            return acquiredItemList.stream()
-                    .anyMatch(acquiredItem -> acquiredItem.getStamp() != null && acquiredItem.getStamp().getId().equals(itemId));
-        }
-
-        return false;
+    private static boolean isItemAcquired(LetterPaper letterPaper, List<AcquiredItem> acquiredItemList) {
+        Long itemId = letterPaper.getId();
+        return acquiredItemList.stream()
+                .anyMatch(acquiredItem -> acquiredItem.getLetterPaper() != null && acquiredItem.getLetterPaper().getId().equals(itemId));
     }
+
+    private static boolean isItemAcquired(Stamp stamp, List<AcquiredItem> acquiredItemList) {
+        Long itemId = stamp.getId();
+        return acquiredItemList.stream()
+                .anyMatch(acquiredItem -> acquiredItem.getStamp() != null && acquiredItem.getStamp().getId().equals(itemId));
+    }
+
+
+    public static AcquiredItem toAcquiredItem(Member member, LetterPaper letterPaper) {
+        return AcquiredItem.builder()
+                .member(member)
+                .letterPaper(letterPaper)
+                .build();
+    }
+
+    public static AcquiredItem toAcquiredItem(Member member, Stamp stamp) {
+        return AcquiredItem.builder()
+                .member(member)
+                .stamp(stamp)
+                .build();
+    }
+
 }

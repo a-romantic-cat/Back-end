@@ -10,4 +10,5 @@ public interface StoreService {
 
     List<StoreResponseDTO.StampResultDTO> findStampList(Long memberId, int page, int pageSize, boolean purchasedOnly);
 
+    void purchasedLetterPaper(Long userId, Long letterPaperId);
 }

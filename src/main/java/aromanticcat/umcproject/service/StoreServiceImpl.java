@@ -3,9 +3,11 @@ package aromanticcat.umcproject.service;
 import aromanticcat.umcproject.converter.StoreConverter;
 import aromanticcat.umcproject.entity.AcquiredItem;
 import aromanticcat.umcproject.entity.LetterPaper;
+import aromanticcat.umcproject.entity.Member;
 import aromanticcat.umcproject.entity.Stamp;
 import aromanticcat.umcproject.repository.AcquiredItemRepository;
 import aromanticcat.umcproject.repository.LetterPaperRepository;
+import aromanticcat.umcproject.repository.MemberRepository;
 import aromanticcat.umcproject.repository.StampRepository;
 import aromanticcat.umcproject.web.dto.store.StoreResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ public class StoreServiceImpl implements StoreService{
     private final LetterPaperRepository letterPaperRepository;
     private final StampRepository stampRepository;
     private final AcquiredItemRepository acquiredItemRepository;
+    private final MemberRepository memberRepository;
 
 
     @Override
@@ -94,5 +97,37 @@ public class StoreServiceImpl implements StoreService{
             return responseDTOs;
         }
 
+    }
+
+    @Override
+    @Transactional
+    public void purchasedLetterPaper(Long userId, Long letterPaperId){
+        // 사용자가 이미 편지를 구매했는지 확인
+        boolean isAlreadyPurchased = acquiredItemRepository.existsByMemberIdAndLetterPaperId(userId, letterPaperId);
+
+        if(!isAlreadyPurchased){
+            Member member = memberRepository.findById(userId).orElseThrow(()-> new IllegalArgumentException("해당 ID에 해당하는 사용자를 찾을 수 없습니다."));
+
+            LetterPaper letterPaper = letterPaperRepository.findById(letterPaperId).orElseThrow(() -> new IllegalArgumentException("해당 ID에 해당하는 편지지를 찾을 수 없습니다."));
+
+            // 편지의 가격을 회원의 코인에서 차감
+            int price = letterPaper.getPrice();
+            int updateCoin = member.getCoin() - price;
+
+            if(updateCoin < 0) {
+                throw new IllegalArgumentException("코인이 부족하여 구매할 수 없습니다.");
+            }
+
+            // 회원 코인 업데이트
+            member.subtractCoin(price);
+            memberRepository.save(member);
+
+            // 획득한 아이템 업데이트
+            AcquiredItem acquiredItem = StoreConverter.toAcquiredItem(member, letterPaper);
+            acquiredItemRepository.save(acquiredItem);
+
+        } else {
+            throw new IllegalArgumentException("이미 해당 편지지를 구매했습니다.");
+        }
     }
 }
