@@ -14,6 +14,8 @@ public interface AcquiredItemRepository extends JpaRepository<AcquiredItem, Long
     Page<AcquiredItem> findByMemberIdAndStampIdIsNotNull(Long memberId, Pageable pageable);
 
     boolean existsByMemberIdAndLetterPaperId(Long userId, Long letterPaperId);
+    boolean existsByMemberIdAndStampId(Long userId, Long stampId);
+
 
 
 }

@@ -112,9 +112,9 @@ public class StoreServiceImpl implements StoreService{
 
             // 편지의 가격을 회원의 코인에서 차감
             int price = letterPaper.getPrice();
-            int updateCoin = member.getCoin() - price;
+            int remainingCoin = member.getCoin() - price;
 
-            if(updateCoin < 0) {
+            if(remainingCoin < 0) {
                 throw new IllegalArgumentException("코인이 부족하여 구매할 수 없습니다.");
             }
 
@@ -128,6 +128,38 @@ public class StoreServiceImpl implements StoreService{
 
         } else {
             throw new IllegalArgumentException("이미 해당 편지지를 구매했습니다.");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void purchasedStamp(Long userId, Long stampId){
+        // 사용자가 이미 우표를 구매했는지 확인
+        boolean isAlreadyPurchased = acquiredItemRepository.existsByMemberIdAndStampId(userId, stampId);
+
+        if(!isAlreadyPurchased){
+            Member member = memberRepository.findById(userId).orElseThrow(()-> new IllegalArgumentException("해당 ID에 해당하는 사용자를 찾을 수 없습니다."));
+
+            Stamp stamp = stampRepository.findById(stampId).orElseThrow(() -> new IllegalArgumentException("해당 ID에 해당하는 우표를 찾을 수 없습니다."));
+
+            // 편지의 가격을 회원의 코인에서 차감
+            int price = stamp.getPrice();
+            int remainingCoin = member.getCoin() - price;
+
+            if(remainingCoin < 0) {
+                throw new IllegalArgumentException("코인이 부족하여 구매할 수 없습니다.");
+            }
+
+            // 회원 코인 업데이트
+            member.subtractCoin(price);
+            memberRepository.save(member);
+
+            // 획득한 아이템 업데이트
+            AcquiredItem acquiredItem = StoreConverter.toAcquiredItem(member, stamp);
+            acquiredItemRepository.save(acquiredItem);
+
+        } else {
+            throw new IllegalArgumentException("이미 해당 우표를 구매했습니다.");
         }
     }
 }

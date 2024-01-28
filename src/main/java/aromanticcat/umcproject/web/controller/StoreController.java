@@ -76,6 +76,23 @@ public class StoreController {
         }
     }
 
+    @PostMapping("/stamps/{stampId}")
+    @Operation(summary = "우표 구매 API")
+    public ApiResponse<String> purchasedStamp(@PathVariable Long stampId) {
+        try{
+            // 로그인한 사용자의 아이디를 가져오는 메서드
+            Long userId = getCurrentUserId();
+
+            storeService.purchasedStamp(userId, stampId);
+
+            return ApiResponse.onSuccess("우표를 성공적으로 구매하였습니다.");
+
+        } catch (Exception e){
+            return ApiResponse.onFailure(HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage(), null);
+
+        }
+    }
+
     //스프링 시큐리티 구현되기 전이라 임시 메서드입니다.
     private Long getCurrentUserId(){
         return 1L;
