@@ -10,8 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
@@ -28,15 +26,5 @@ public class LetterboxService {
         letterbox.setMember(member);
         letterboxRepository.save(letterbox);
         return letterbox.getName();
-    }
-
-    public LetterboxResponse getLetterboxById(Long letterboxId) {
-        Letterbox letterbox = letterboxRepository.findById(letterboxId).orElse(null);
-
-        if (letterbox != null) {
-            return letterbox.toResponse(letterbox);
-        } else {
-            return null;
-        }
     }
 }
