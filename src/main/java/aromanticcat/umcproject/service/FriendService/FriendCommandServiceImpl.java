@@ -32,7 +32,7 @@ public class FriendCommandServiceImpl implements FriendCommandService {
 
         // 친구 요청을 받는 사용자 (친구의 우편함으로 검색)
         Letterbox toLetterbox = letterBoxRepository.findById(request.getToMemberLetterBoxId()).orElse(null);
-        Long toMemberId = toLetterbox.getMemberId();
+        Long toMemberId = toLetterbox.getMember().getId();
         Member toMember = memberRepository.findById(toMemberId).orElse(null);
 
         // dto의 정보를 기반으로 새로운 친구 객체 생성1 (fromMember 기준)

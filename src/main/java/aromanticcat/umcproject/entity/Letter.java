@@ -2,13 +2,15 @@ package aromanticcat.umcproject.entity;
 
 import lombok.Builder;
 import lombok.Getter;
-
+import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Builder
+@Setter
+@AllArgsConstructor
+@RequiredArgsConstructor
 @Table(name = "letter")
 public class Letter extends BaseEntity {
 
