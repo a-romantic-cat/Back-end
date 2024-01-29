@@ -1,5 +1,6 @@
 package aromanticcat.umcproject.entity;
 
+import aromanticcat.umcproject.web.dto.LetterboxResponse;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.*;
@@ -47,5 +48,17 @@ public class Letterbox extends BaseEntity {
         this.endDt = endDt;
         this.activate = activate;
         this.sender = sender;
+    }
+
+    public LetterboxResponse toResponse(Letterbox letterbox) {
+        LetterboxResponse letterboxResponse = new LetterboxResponse();
+        letterboxResponse.setId(letterbox.letterbox_id);
+        letterboxResponse.setName(letterbox.name);
+        letterboxResponse.setColor(letterbox.color);
+        letterboxResponse.setEndDt(letterbox.endDt);
+        letterboxResponse.setActivate(letterbox.activate);
+        letterboxResponse.setSender(letterbox.sender);
+
+        return letterboxResponse;
     }
 }
