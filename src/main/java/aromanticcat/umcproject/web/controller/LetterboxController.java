@@ -33,4 +33,15 @@ public class LetterboxController {
             return ApiResponse.onFailure(HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage(), null);
         }
     }
+
+    @PatchMapping("/{letterboxId}")
+    @ApiOperation(value = "우편함 수정")
+    public ApiResponse<LetterboxResponse> updateLetterbox( @PathVariable Long letterboxId, @RequestBody LetterboxRequest request) {
+        LetterboxResponse updatedLbResponse = letterboxService.updateLetterbox(letterboxId, request);
+        try {
+            return ApiResponse.onSuccess(updatedLbResponse);
+        } catch (Exception e){
+            return ApiResponse.onFailure(HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage(), null);
+        }
+    }
 }

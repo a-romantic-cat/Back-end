@@ -6,6 +6,7 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+@Getter
 public class LetterboxRequest {
     private String name;
     private String color;
@@ -13,7 +14,6 @@ public class LetterboxRequest {
     private Boolean activate;
     private Boolean sender;
 
-    @Getter
     private Long member_id;
     public Letterbox toEntity() {
         Letterbox letterbox = Letterbox.builder()

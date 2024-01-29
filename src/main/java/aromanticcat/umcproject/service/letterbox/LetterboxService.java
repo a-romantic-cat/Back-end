@@ -39,4 +39,32 @@ public class LetterboxService {
             return null;
         }
     }
+
+    @Transactional
+    public LetterboxResponse updateLetterbox(Long letterboxId, LetterboxRequest request) {
+        Letterbox letterbox = letterboxRepository.findById(letterboxId).orElse(null);
+
+        if (letterbox != null) {
+            if (request.getName() != null) {
+                letterbox.setName(request.getName());
+            }
+            if (request.getColor() != null) {
+                letterbox.setColor(request.getColor());
+            }
+            if (request.getEndDt() != null) {
+                letterbox.setEndDt(request.getEndDt());
+            }
+            if (request.getActivate() != null) {
+                letterbox.setActivate(request.getActivate());
+            }
+            if (request.getSender() != null) {
+                letterbox.setSender(request.getSender());
+            }
+
+            letterboxRepository.save(letterbox);
+            return letterbox.toResponse(letterbox);
+        } else {
+            return null;
+        }
+    }
 }
