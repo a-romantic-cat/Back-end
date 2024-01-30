@@ -1,4 +1,4 @@
-package aromanticcat.umcproject.web.dto.nangmanLetterBox;
+package aromanticcat.umcproject.web.dto.nangmanLetterbox;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -51,7 +51,7 @@ public class  NangmanLetterBoxResponseDTO {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class WriteReplyResultDTO { // 답장 발송 완료 응답
+    public static class SendReplyResultDTO { // 답장 발송 완료 응답
         private Long nangmanLetterId;
         private Long nangmanReplyId;
         private String replySenderNickname;

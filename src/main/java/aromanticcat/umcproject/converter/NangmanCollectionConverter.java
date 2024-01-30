@@ -2,7 +2,7 @@ package aromanticcat.umcproject.converter;
 
 import aromanticcat.umcproject.entity.NangmanLetter;
 import aromanticcat.umcproject.entity.NangmanReply;
-import aromanticcat.umcproject.web.dto.nangmanLetterBox.NangmanCollectionResponseDTO;
+import aromanticcat.umcproject.web.dto.nangmanLetterbox.NangmanCollectionResponseDTO;
 
 public class NangmanCollectionConverter {
 //
@@ -25,12 +25,12 @@ public class NangmanCollectionConverter {
     }
 
 
-    public static NangmanCollectionResponseDTO.PreviewBothResultDTO toPreviewBothResultDTO(NangmanLetter nangmanLetter){
+    public static NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO toPreviewBothResultDTO(NangmanLetter nangmanLetter){
         NangmanReply nangmanReply = nangmanLetter.getNangmanReply();
 
         if(nangmanReply == null) {
             //reply가 null인 경우에는 편지 미리보기만
-            return NangmanCollectionResponseDTO.PreviewBothResultDTO.builder()
+            return NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO.builder()
                     .nangmanLetterId(nangmanLetter.getId())
                     .previewLetter(getPreviewText(nangmanLetter.getContent()))
                     .createAt(nangmanLetter.getCreatedAt())
@@ -38,7 +38,7 @@ public class NangmanCollectionConverter {
         }
         if(!nangmanLetter.getIsPublic()) {
             //비공개인 경우 편지+답장 프리뷰
-            return NangmanCollectionResponseDTO.PreviewBothResultDTO.builder()
+            return NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO.builder()
                     .nangmanLetterId(nangmanLetter.getId())
                     .nangmanReplyId(nangmanReply.getId())
                     .previewLetter(getPreviewText(nangmanLetter.getContent()))
@@ -48,7 +48,7 @@ public class NangmanCollectionConverter {
         }
 
         //공개인 경우 편지+답장+공감수
-        return NangmanCollectionResponseDTO.PreviewBothResultDTO.builder()
+        return NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO.builder()
                 .nangmanLetterId(nangmanLetter.getId())
                 .nangmanReplyId(nangmanReply.getId())
                 .previewLetter(getPreviewText(nangmanLetter.getContent()))
@@ -84,8 +84,8 @@ public class NangmanCollectionConverter {
     }
 
     //편지 상세 + 답장 상세
-    public static NangmanCollectionResponseDTO.BothResultDTO toBothResultDTO(NangmanLetter nangmanLetter, NangmanReply nangmanReply){
-        return NangmanCollectionResponseDTO.BothResultDTO.builder()
+    public static NangmanCollectionResponseDTO.LetterAndReplyResultDTO toBothResultDTO(NangmanLetter nangmanLetter, NangmanReply nangmanReply){
+        return NangmanCollectionResponseDTO.LetterAndReplyResultDTO.builder()
                 .nangmanLetterId(nangmanLetter.getId())
                 .letterContent(nangmanLetter.getContent())
                 .senderNickname(nangmanLetter.getSenderNickname())

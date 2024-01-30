@@ -1,11 +1,11 @@
-package aromanticcat.umcproject.service.nangmanLetterBoxService;
+package aromanticcat.umcproject.service.nangmanLetterboxService;
 
 import aromanticcat.umcproject.converter.NangmanCollectionConverter;
 import aromanticcat.umcproject.entity.NangmanLetter;
 import aromanticcat.umcproject.entity.NangmanReply;
 import aromanticcat.umcproject.repository.NangmanLetterRepository;
 import aromanticcat.umcproject.repository.NangmanReplyRepository;
-import aromanticcat.umcproject.web.dto.nangmanLetterBox.NangmanCollectionResponseDTO;
+import aromanticcat.umcproject.web.dto.nangmanLetterbox.NangmanCollectionResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,7 +26,7 @@ public class NangmanCollectionServiceImpl implements NangmanCollectionService{
 
     @Override
     @Transactional
-    public List<NangmanCollectionResponseDTO.PreviewBothResultDTO> findCollection(int page, int pageSize){
+    public List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO> findCollection(int page, int pageSize){
         Pageable pageable = PageRequest.of(page, pageSize);
 
         Page<NangmanLetter> letterPage = nangmanLetterRepository.findByIsPublicTrueAndHasResponseTrue(pageable);
@@ -40,7 +40,7 @@ public class NangmanCollectionServiceImpl implements NangmanCollectionService{
 
     @Override
     @Transactional
-    public NangmanCollectionResponseDTO.BothResultDTO findCollectionDetails(Long nangmanLetterId) {
+    public NangmanCollectionResponseDTO.LetterAndReplyResultDTO findCollectionDetails(Long nangmanLetterId) {
 
         NangmanLetter nangmanLetter = nangmanLetterRepository.findByIsPublicTrueAndHasResponseTrueAndId(nangmanLetterId);
         if(nangmanLetter == null){
@@ -88,7 +88,7 @@ public class NangmanCollectionServiceImpl implements NangmanCollectionService{
     // 사용자 ID로 해당 사용자가 작성한 편지 목록 조회
     @Override
     @Transactional
-    public List<NangmanCollectionResponseDTO.PreviewBothResultDTO> getMyLetterList(Long userId, int page, int pageSize){
+    public List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO> getMyLetterList(Long userId, int page, int pageSize){
 
         Pageable pageable = PageRequest.of(page, pageSize);
 
@@ -103,7 +103,7 @@ public class NangmanCollectionServiceImpl implements NangmanCollectionService{
 
     @Override
     @Transactional
-    public  List<NangmanCollectionResponseDTO.PreviewBothResultDTO> getMyReplyList(Long userId, int page, int pageSize){
+    public  List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO> getMyReplyList(Long userId, int page, int pageSize){
 
         Pageable pageable = PageRequest.of(page, pageSize);
 

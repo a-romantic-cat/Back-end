@@ -3,8 +3,8 @@ package aromanticcat.umcproject.converter;
 import aromanticcat.umcproject.entity.Member;
 import aromanticcat.umcproject.entity.NangmanLetter;
 import aromanticcat.umcproject.entity.NangmanReply;
-import aromanticcat.umcproject.web.dto.nangmanLetterBox.NangmanLetterBoxRequestDTO;
-import aromanticcat.umcproject.web.dto.nangmanLetterBox.NangmanLetterBoxResponseDTO;
+import aromanticcat.umcproject.web.dto.nangmanLetterbox.NangmanLetterboxRequestDTO;
+import aromanticcat.umcproject.web.dto.nangmanLetterbox.NangmanLetterBoxResponseDTO;
 
 public class NangmanLetterBoxConverter {
 
@@ -17,7 +17,7 @@ public class NangmanLetterBoxConverter {
                 .build();
     }
 
-    public static NangmanLetter toNangmanLetter(NangmanLetterBoxRequestDTO.WriteLetterDTO request, Member member) {
+    public static NangmanLetter toNangmanLetter(NangmanLetterboxRequestDTO.SendLetterDTO request, Member member) {
 
         return NangmanLetter.builder()
                 .isPublic(request.getIsPublic())
@@ -49,7 +49,7 @@ public class NangmanLetterBoxConverter {
                 .build();
     }
 
-    public static NangmanReply toNangmanReply(NangmanLetterBoxRequestDTO.WriteReplyDTO request, NangmanLetter nangmanLetter, Member member) {
+    public static NangmanReply toNangmanReply(NangmanLetterboxRequestDTO.SendReplyDTO request, NangmanLetter nangmanLetter, Member member) {
         return NangmanReply.builder()
                 .content(request.getReplyContent())
                 .replySenderNickname(request.getReplySenderNickname())
@@ -59,8 +59,8 @@ public class NangmanLetterBoxConverter {
 
     }
 
-    public static NangmanLetterBoxResponseDTO.WriteReplyResultDTO toWriteReplyResultDTO(NangmanReply nangmanReply) {
-        return NangmanLetterBoxResponseDTO.WriteReplyResultDTO.builder()
+    public static NangmanLetterBoxResponseDTO.SendReplyResultDTO toWriteReplyResultDTO(NangmanReply nangmanReply) {
+        return NangmanLetterBoxResponseDTO.SendReplyResultDTO.builder()
                 .nangmanReplyId(nangmanReply.getId())
                 .nangmanLetterId(nangmanReply.getNangmanLetter().getId())
                 .replySenderNickname(nangmanReply.getReplySenderNickname())

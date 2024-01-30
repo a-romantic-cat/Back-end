@@ -2,8 +2,8 @@ package aromanticcat.umcproject.web.controller;
 
 
 import aromanticcat.umcproject.apiPayload.ApiResponse;
-import aromanticcat.umcproject.service.nangmanLetterBoxService.NangmanCollectionService;
-import aromanticcat.umcproject.web.dto.nangmanLetterBox.NangmanCollectionResponseDTO;
+import aromanticcat.umcproject.service.nangmanLetterboxService.NangmanCollectionService;
+import aromanticcat.umcproject.web.dto.nangmanLetterbox.NangmanCollectionResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,11 +22,11 @@ public class NangmanCollectionController {
     @Operation(summary = "낭만모음집 목록 조회 API",
             description = "페이징을 포함합니다. query String으로 page(기본값 0)와 pageSize(기본값 12)를 주세요."+
                           "낭만 편지의 내용(40자) + 답장 내용(40자)을 반환합니다.")
-    public ApiResponse<List<NangmanCollectionResponseDTO.PreviewBothResultDTO>> CollectionList(
+    public ApiResponse<List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO>> CollectionList(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "12") int pageSize) {
         try{
-            List<NangmanCollectionResponseDTO.PreviewBothResultDTO> collection = nangmanCollectionService.findCollection(page, pageSize);
+            List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO> collection = nangmanCollectionService.findCollection(page, pageSize);
 
             return ApiResponse.onSuccess(collection);
         } catch (Exception e){
@@ -39,9 +39,9 @@ public class NangmanCollectionController {
     @GetMapping("/{nangmanLetterId}")
     @Operation(summary = "낭만모음집 특정 편지 상세 조회 API",
                 description = "편지,답장 상세 내용 + 공감 수")
-    public ApiResponse<NangmanCollectionResponseDTO.BothResultDTO> CollecitonDetails(@PathVariable Long nangmanLetterId){
+    public ApiResponse<NangmanCollectionResponseDTO.LetterAndReplyResultDTO> CollecitonDetails(@PathVariable Long nangmanLetterId){
         try{
-            NangmanCollectionResponseDTO.BothResultDTO details = nangmanCollectionService.findCollectionDetails(nangmanLetterId);
+            NangmanCollectionResponseDTO.LetterAndReplyResultDTO details = nangmanCollectionService.findCollectionDetails(nangmanLetterId);
 
             return ApiResponse.onSuccess(details);
         } catch (Exception e){
@@ -68,7 +68,7 @@ public class NangmanCollectionController {
             description = "사용자가 작성한 편지 목록을 조회하는 API입니다." +
                         "편지(40자) + 답장(답장이 있을 경우 40자) + 공감수(공개 편지인 경우)를 반환합니다." +
                         "페이징을 포함합니다. query String으로 page(기본값 0)와 pageSize(기본값 6)를 주세요.")
-    public ApiResponse<List<NangmanCollectionResponseDTO.PreviewBothResultDTO>> getMyNangmanLetters(
+    public ApiResponse<List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO>> getMyNangmanLetters(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "6") int pageSize) {
         try {
@@ -77,7 +77,7 @@ public class NangmanCollectionController {
             Long userId = getCurrentUserId(); // 로그인한 사용자의 아이디를 가져오는 메서드
 
             // 사용자가 작성한 편지 목록 조회
-            List<NangmanCollectionResponseDTO.PreviewBothResultDTO> userLetterList = nangmanCollectionService.getMyLetterList(userId, page, pageSize);
+            List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO> userLetterList = nangmanCollectionService.getMyLetterList(userId, page, pageSize);
 
             // 성공 응답 생성
             return ApiResponse.onSuccess(userLetterList);
@@ -93,7 +93,7 @@ public class NangmanCollectionController {
             description = "사용자가 답장한 목록을 조회하는 API입니다."+
                         "연결된 낭만 편지의 내용(40자) + 답장 내용(40자) + 공감 수(공개된 편지일 경우)를 반환합니다." +
                         "페이징을 포함합니다. query String으로 page(기본값 0)와 pageSize(기본값 6)를 주세요.")
-    public ApiResponse<List<NangmanCollectionResponseDTO.PreviewBothResultDTO>> getMyNangmanReplies(
+    public ApiResponse<List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO>> getMyNangmanReplies(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "6") int pageSize) {
         try{
@@ -102,7 +102,7 @@ public class NangmanCollectionController {
             Long userId = getCurrentUserId(); // 로그인한 사용자의 아이디를 가져오는 메서드
 
             // 사용자가 답장한 목록 조회
-            List<NangmanCollectionResponseDTO.PreviewBothResultDTO> userReplyList = nangmanCollectionService.getMyReplyList(userId,  page, pageSize);
+            List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO> userReplyList = nangmanCollectionService.getMyReplyList(userId,  page, pageSize);
 
             // 성공 응답 생성
             return ApiResponse.onSuccess(userReplyList);

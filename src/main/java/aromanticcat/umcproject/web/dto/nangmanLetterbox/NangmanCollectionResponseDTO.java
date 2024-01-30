@@ -1,4 +1,4 @@
-package aromanticcat.umcproject.web.dto.nangmanLetterBox;
+package aromanticcat.umcproject.web.dto.nangmanLetterbox;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +14,7 @@ public class NangmanCollectionResponseDTO {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class PreviewBothResultDTO{ // 편지 미리보기 + 답장 미리보기(있을 경우) + 공감 수(공개일 경우)
+    public static class PreviewLetterAndReplyResultDTO { // 편지 미리보기 + 답장 미리보기(있을 경우) + 공감 수(공개일 경우)
         private Long nangmanLetterId;
 
         private Long nangmanReplyId;
@@ -32,7 +32,7 @@ public class NangmanCollectionResponseDTO {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class BothResultDTO { // 편지 + 답장 상세 응답
+    public static class LetterAndReplyResultDTO { // 편지 + 답장 상세 응답
         private Long nangmanLetterId;
         private String letterContent;
         private String senderNickname;
@@ -40,19 +40,5 @@ public class NangmanCollectionResponseDTO {
         private String replyContent;
         private String replySenderNickname;
     }
-
-//    @Getter
-//    @Builder
-//    @AllArgsConstructor
-//    @NoArgsConstructor
-//    public static class PreviewReplyResultDTO { // 답장 미리보기
-//        private Long nangmanLetterId;
-//
-//        private Long nangmanReplyId;
-//
-//        private String preview;
-//
-//        private Integer totalEmojiCount;
-//    }
 
 }

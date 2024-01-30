@@ -1,4 +1,4 @@
-package aromanticcat.umcproject.service.nangmanLetterBoxService;
+package aromanticcat.umcproject.service.nangmanLetterboxService;
 
 import aromanticcat.umcproject.converter.NangmanLetterBoxConverter;
 import aromanticcat.umcproject.entity.Member;
@@ -7,8 +7,8 @@ import aromanticcat.umcproject.entity.NangmanReply;
 import aromanticcat.umcproject.repository.MemberRepository;
 import aromanticcat.umcproject.repository.NangmanLetterRepository;
 import aromanticcat.umcproject.repository.NangmanReplyRepository;
-import aromanticcat.umcproject.web.dto.nangmanLetterBox.NangmanLetterBoxRequestDTO;
-import aromanticcat.umcproject.web.dto.nangmanLetterBox.NangmanLetterBoxResponseDTO;
+import aromanticcat.umcproject.web.dto.nangmanLetterbox.NangmanLetterboxRequestDTO;
+import aromanticcat.umcproject.web.dto.nangmanLetterbox.NangmanLetterBoxResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,7 +22,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class NangmanLetterBoxServiceImpl implements NangmanLetterBoxService {
+public class NangmanLetterboxServiceImpl implements NangmanLetterboxService {
 
     private final NangmanLetterRepository nangmanLetterRepository;
     private final MemberRepository memberRepository;
@@ -43,7 +43,7 @@ public class NangmanLetterBoxServiceImpl implements NangmanLetterBoxService {
 
     @Override
     @Transactional
-    public NangmanLetter sendLetter(Long memberId, NangmanLetterBoxRequestDTO.WriteLetterDTO request){
+    public NangmanLetter sendLetter(Long memberId, NangmanLetterboxRequestDTO.SendLetterDTO request){
         Member member = getMember(memberId);
 
         NangmanLetter newNangmanLetter = NangmanLetterBoxConverter.toNangmanLetter(request, member);
@@ -75,7 +75,7 @@ public class NangmanLetterBoxServiceImpl implements NangmanLetterBoxService {
 
     @Override
     @Transactional
-    public  NangmanLetterBoxResponseDTO.WriteReplyResultDTO sendReply(Long memberId, NangmanLetterBoxRequestDTO.WriteReplyDTO request, Long nangmanLetterId){
+    public NangmanLetterBoxResponseDTO.SendReplyResultDTO sendReply(Long memberId, NangmanLetterboxRequestDTO.SendReplyDTO request, Long nangmanLetterId){
         //멤버 엔티티 조회
         Member member = getMember(memberId);
 

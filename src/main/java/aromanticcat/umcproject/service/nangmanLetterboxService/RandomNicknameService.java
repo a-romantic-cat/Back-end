@@ -1,4 +1,4 @@
-package aromanticcat.umcproject.service.nangmanLetterBoxService;
+package aromanticcat.umcproject.service.nangmanLetterboxService;
 
 import org.springframework.stereotype.Service;
 

@@ -3,10 +3,10 @@ package aromanticcat.umcproject.web.controller;
 import aromanticcat.umcproject.apiPayload.ApiResponse;
 import aromanticcat.umcproject.converter.NangmanLetterBoxConverter;
 import aromanticcat.umcproject.entity.NangmanLetter;
-import aromanticcat.umcproject.service.nangmanLetterBoxService.RandomNicknameService;
-import aromanticcat.umcproject.service.nangmanLetterBoxService.NangmanLetterBoxService;
-import aromanticcat.umcproject.web.dto.nangmanLetterBox.NangmanLetterBoxRequestDTO;
-import aromanticcat.umcproject.web.dto.nangmanLetterBox.NangmanLetterBoxResponseDTO;
+import aromanticcat.umcproject.service.nangmanLetterboxService.RandomNicknameService;
+import aromanticcat.umcproject.service.nangmanLetterboxService.NangmanLetterboxService;
+import aromanticcat.umcproject.web.dto.nangmanLetterbox.NangmanLetterboxRequestDTO;
+import aromanticcat.umcproject.web.dto.nangmanLetterbox.NangmanLetterBoxResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,9 +18,9 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/nangman-letterbox")
 @RequiredArgsConstructor
-public class NangmanLetterBoxController {
+public class NangmanLetterboxController {
 
-    private final NangmanLetterBoxService nangmanLetterBoxService;
+    private final NangmanLetterboxService nangmanLetterBoxService;
     private final RandomNicknameService randomNicknameService;
 
     @GetMapping("/random-nickname")
@@ -41,7 +41,7 @@ public class NangmanLetterBoxController {
     @PostMapping("/send")
     @Operation(summary = "고민 편지 발송 API"
             , description = "편지의 내용과 공개 여부 데이터를 넘기는 API 입니다. " )
-    public ApiResponse<NangmanLetterBoxResponseDTO.SendLetterResultDTO> sendLetter(@RequestBody NangmanLetterBoxRequestDTO.WriteLetterDTO request){
+    public ApiResponse<NangmanLetterBoxResponseDTO.SendLetterResultDTO> sendLetter(@RequestBody NangmanLetterboxRequestDTO.SendLetterDTO request){
         try{
             Long userId = getCurrentUserId(); // 로그인한 사용자의 아이디를 가져오는 메서드
 
@@ -104,11 +104,11 @@ public class NangmanLetterBoxController {
 
     @PostMapping("/letter-list/{nangmanLetterId}")
     @Operation(summary  = "답장 발송 API")
-    public ApiResponse<NangmanLetterBoxResponseDTO.WriteReplyResultDTO> sendReply(@PathVariable Long nangmanLetterId, @RequestBody NangmanLetterBoxRequestDTO.WriteReplyDTO request){
+    public ApiResponse<NangmanLetterBoxResponseDTO.SendReplyResultDTO> sendReply(@PathVariable Long nangmanLetterId, @RequestBody NangmanLetterboxRequestDTO.SendReplyDTO request){
         try{
             Long userId = getCurrentUserId(); // 로그인한 사용자의 아이디를 가져오는 메서드
 
-            NangmanLetterBoxResponseDTO.WriteReplyResultDTO replyResultDTO = nangmanLetterBoxService.sendReply(userId, request, nangmanLetterId);
+            NangmanLetterBoxResponseDTO.SendReplyResultDTO replyResultDTO = nangmanLetterBoxService.sendReply(userId, request, nangmanLetterId);
 
             //성공 응답 생성
             return ApiResponse.onSuccess(replyResultDTO);
