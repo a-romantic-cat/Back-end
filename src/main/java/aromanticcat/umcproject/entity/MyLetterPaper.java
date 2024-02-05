@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 @RequiredArgsConstructor
 @Table(name = "myLetterPaper")
-public class MyLetterPaper {
+public class MyLetterPaper extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long mPaper_id;

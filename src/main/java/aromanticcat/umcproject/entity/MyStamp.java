@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @RequiredArgsConstructor
 @Table(name = "myStamp")
-public class MyStamp {
+public class MyStamp extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long mStamp_id;
