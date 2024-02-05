@@ -1,4 +1,4 @@
-package aromanticcat.umcproject.service;
+package aromanticcat.umcproject.service.storeService;
 
 import aromanticcat.umcproject.web.dto.store.StoreResponseDTO;
 

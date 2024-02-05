@@ -1,4 +1,4 @@
-package aromanticcat.umcproject.service;
+package aromanticcat.umcproject.service.myCollectionService;
 
 import aromanticcat.umcproject.S3.S3Service;
 import aromanticcat.umcproject.entity.Member;
@@ -7,7 +7,6 @@ import aromanticcat.umcproject.entity.MyStamp;
 import aromanticcat.umcproject.repository.MemberRepository;
 import aromanticcat.umcproject.repository.MyLetterPaperRepository;
 import aromanticcat.umcproject.repository.MyStampRepository;
-import aromanticcat.umcproject.repository.StampRepository;
 import aromanticcat.umcproject.web.dto.MyDesignRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

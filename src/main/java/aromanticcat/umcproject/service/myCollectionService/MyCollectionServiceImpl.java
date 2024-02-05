@@ -1,4 +1,4 @@
-package aromanticcat.umcproject.service;
+package aromanticcat.umcproject.service.myCollectionService;
 
 import aromanticcat.umcproject.converter.MyCollectionConverter;
 import aromanticcat.umcproject.entity.AcquiredItem;

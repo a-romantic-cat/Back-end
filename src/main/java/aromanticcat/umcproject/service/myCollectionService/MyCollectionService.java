@@ -1,4 +1,4 @@
-package aromanticcat.umcproject.service;
+package aromanticcat.umcproject.service.myCollectionService;
 
 import aromanticcat.umcproject.web.dto.MyCollectionResponseDTO;
 

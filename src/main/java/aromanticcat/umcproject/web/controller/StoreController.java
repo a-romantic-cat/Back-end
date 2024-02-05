@@ -1,7 +1,7 @@
 package aromanticcat.umcproject.web.controller;
 
 import aromanticcat.umcproject.apiPayload.ApiResponse;
-import aromanticcat.umcproject.service.StoreService;
+import aromanticcat.umcproject.service.storeService.StoreService;
 import aromanticcat.umcproject.web.dto.store.StoreResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
