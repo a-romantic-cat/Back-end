@@ -25,12 +25,13 @@ public class MyCollectionController {
             description = "페이징을 포함합니다. query String으로 page(기본값 0)와 pageSize(기본값 12)를 주세요.")
     public ApiResponse<List<MyCollectionResponseDTO.AcquiredLetterPaperResultDTO>> getMyLetterPaperList(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "12") int pageSize) {
+            @RequestParam(defaultValue = "12") int pageSize,
+            @RequestParam(defaultValue = "false")boolean onlyMyDesign) {
         try {
             // 로그인한 사용자의 아이디를 가져오는 메서드
             Long userId = getCurrentUserId();
 
-            List<MyCollectionResponseDTO.AcquiredLetterPaperResultDTO> letterPaperList = myCollectionService.findLetterPaperList(userId, page, pageSize);
+            List<MyCollectionResponseDTO.AcquiredLetterPaperResultDTO> letterPaperList = myCollectionService.findLetterPaperList(userId, page, pageSize, onlyMyDesign);
 
             return ApiResponse.onSuccess(letterPaperList);
 

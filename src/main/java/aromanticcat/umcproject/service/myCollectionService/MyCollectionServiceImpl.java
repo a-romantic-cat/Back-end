@@ -2,8 +2,10 @@ package aromanticcat.umcproject.service.myCollectionService;
 
 import aromanticcat.umcproject.converter.MyCollectionConverter;
 import aromanticcat.umcproject.entity.AcquiredItem;
+import aromanticcat.umcproject.entity.MyLetterPaper;
 import aromanticcat.umcproject.entity.MyStamp;
 import aromanticcat.umcproject.repository.AcquiredItemRepository;
+import aromanticcat.umcproject.repository.MyLetterPaperRepository;
 import aromanticcat.umcproject.repository.MyStampRepository;
 import aromanticcat.umcproject.web.dto.MyCollectionResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -23,21 +25,44 @@ import java.util.stream.Collectors;
 public class MyCollectionServiceImpl implements MyCollectionService {
 
     private final AcquiredItemRepository acquiredItemRepository;
+    private final MyLetterPaperRepository myLetterPaperRepository;
     private final MyStampRepository myStampRepository;
 
     @Override
     @Transactional
-    public List<MyCollectionResponseDTO.AcquiredLetterPaperResultDTO> findLetterPaperList(Long memberId, int page, int pageSize) {
+    public List<MyCollectionResponseDTO.AcquiredLetterPaperResultDTO> findLetterPaperList(Long memberId, int page, int pageSize, boolean onlyMyDesign) {
         Pageable pageable = PageRequest.of(page, pageSize);
+        List<MyCollectionResponseDTO.AcquiredLetterPaperResultDTO> responseDTOs;
 
-        // 사용자가 구매한 편지지 목록 조회
-        Page<AcquiredItem> acquiredLetterPaperPage = acquiredItemRepository.findByMemberIdAndLetterPaperIdIsNotNull(memberId, pageable);
+        if(onlyMyDesign) {
+            Page<MyLetterPaper> myLetterPaperPage = myLetterPaperRepository.findByMemberId(memberId, pageable);
+            List<MyLetterPaper> myLetterPaperList = myLetterPaperPage.getContent();
 
-        List<AcquiredItem> acquiredLetterPaperList = acquiredLetterPaperPage.getContent();
+            responseDTOs = myLetterPaperList.stream()
+                    .map(myLetterPaper -> MyCollectionConverter.toMyLetterPaperResultDTO(myLetterPaper))
+                    .collect(Collectors.toList());
+        }else {
+            // 사용자가 구매한 편지지 목록 조회
+            Page<AcquiredItem> acquiredLetterPaperPage = acquiredItemRepository.findByMemberIdAndLetterPaperIdIsNotNull(memberId, pageable);
+            List<AcquiredItem> acquiredLetterPaperList = acquiredLetterPaperPage.getContent();
 
-        List<MyCollectionResponseDTO.AcquiredLetterPaperResultDTO> responseDTOs = acquiredLetterPaperList.stream()
-                .map(letterPaper -> MyCollectionConverter.toAcquiredLetterPaperResultDTO(letterPaper))
-                .collect(Collectors.toList());
+            // 마이 디자인 편지지 목록 조회
+            Page<MyLetterPaper> myLetterPaperPage = myLetterPaperRepository.findByMemberId(memberId, pageable);
+            List<MyLetterPaper> myLetterPaperList = myLetterPaperPage.getContent();
+
+            // MyLetterPaper와 AcquredItem에서 가져온 편지지 목록 병합
+            List<MyCollectionResponseDTO.AcquiredLetterPaperResultDTO> myLetterPaperDTOs = myLetterPaperList.stream()
+                    .map(myLetterPaper -> MyCollectionConverter.toMyLetterPaperResultDTO(myLetterPaper))
+                    .collect(Collectors.toList());
+
+            List<MyCollectionResponseDTO.AcquiredLetterPaperResultDTO> acquiredLetterPaperDTOs = acquiredLetterPaperList.stream()
+                    .map(letterPaper -> MyCollectionConverter.toAcquiredLetterPaperResultDTO(letterPaper))
+                    .collect(Collectors.toList());
+
+            responseDTOs = new ArrayList<>();
+            responseDTOs.addAll(myLetterPaperDTOs);
+            responseDTOs.addAll(acquiredLetterPaperDTOs);
+        }
         return responseDTOs;
 
     }
