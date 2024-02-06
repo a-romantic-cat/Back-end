@@ -2,7 +2,9 @@ package aromanticcat.umcproject.service.myCollectionService;
 
 import aromanticcat.umcproject.converter.MyCollectionConverter;
 import aromanticcat.umcproject.entity.AcquiredItem;
+import aromanticcat.umcproject.entity.MyStamp;
 import aromanticcat.umcproject.repository.AcquiredItemRepository;
+import aromanticcat.umcproject.repository.MyStampRepository;
 import aromanticcat.umcproject.web.dto.MyCollectionResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +23,7 @@ import java.util.stream.Collectors;
 public class MyCollectionServiceImpl implements MyCollectionService {
 
     private final AcquiredItemRepository acquiredItemRepository;
+    private final MyStampRepository myStampRepository;
 
     @Override
     @Transactional
@@ -40,20 +44,46 @@ public class MyCollectionServiceImpl implements MyCollectionService {
 
     @Override
     @Transactional
-    public List<MyCollectionResponseDTO.AcquiredStampResultDTO> findStampList(Long memberId, int page, int pageSize) {
+    public List<MyCollectionResponseDTO.AcquiredStampResultDTO> findStampList(Long memberId, int page, int pageSize, boolean onlyMyDesign) {
         Pageable pageable = PageRequest.of(page, pageSize);
+        List<MyCollectionResponseDTO.AcquiredStampResultDTO> responseDTOs;
 
-        // 사용자가 구매한 우표 목록 조회
-        Page<AcquiredItem> acquiredStampPage = acquiredItemRepository.findByMemberIdAndStampIdIsNotNull(memberId, pageable);
+        if(onlyMyDesign){
+            Page<MyStamp> myStampPage = myStampRepository.findByMemberId(memberId, pageable);
 
-        List<AcquiredItem> acquiredStampList = acquiredStampPage.getContent();
+            List<MyStamp> myStampList = myStampPage.getContent();
 
-        List<MyCollectionResponseDTO.AcquiredStampResultDTO> responseDTOs = acquiredStampList.stream()
-                .map(stamp -> MyCollectionConverter.toAcquiredStampResultDTO(stamp))
-                .collect(Collectors.toList());
+            responseDTOs = myStampList.stream()
+                    .map(myStamp -> MyCollectionConverter.toMyStampResultDTO(myStamp))
+                    .collect(Collectors.toList());
+        }else{
+            // 사용자가 구매한 우표 목록 조회
+            Page<AcquiredItem> acquiredStampPage = acquiredItemRepository.findByMemberIdAndStampIdIsNotNull(memberId, pageable);
+            List<AcquiredItem> acquiredStampList = acquiredStampPage.getContent();
+
+            // 마이 디자인 우표 목록 조회
+            Page<MyStamp> myStampPage = myStampRepository.findByMemberId(memberId, pageable);
+            List<MyStamp> myStampList = myStampPage.getContent();
+
+            // MyStamp와 AcquredItem에서 가져온 우표 목록 병합
+            List<MyCollectionResponseDTO.AcquiredStampResultDTO> myStampDTOs = myStampList.stream()
+                    .map(myStamp -> MyCollectionConverter.toMyStampResultDTO(myStamp))
+                    .collect(Collectors.toList());
+
+            List<MyCollectionResponseDTO.AcquiredStampResultDTO> acquiredStampDTOs = acquiredStampList.stream()
+                    .map(stamp -> MyCollectionConverter.toAcquiredStampResultDTO(stamp))
+                    .collect(Collectors.toList());
+
+            responseDTOs = new ArrayList<>();
+            responseDTOs.addAll(myStampDTOs);
+            responseDTOs.addAll(acquiredStampDTOs);
+        }
+
         return responseDTOs;
 
     }
+
+
 
 
 }
