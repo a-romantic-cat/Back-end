@@ -28,9 +28,9 @@ public class NangmanLetterboxServiceImpl implements NangmanLetterboxService {
     private final MemberRepository memberRepository;
     private final NangmanReplyRepository nangmanReplyRepository;
 
-    public Member getMember(Long memberId){
-        return memberRepository.findById(memberId)
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다. ID: " + memberId));
+    public Member getMember(String email){
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다. ID: " + email));
     }
 
     @Override
@@ -43,8 +43,8 @@ public class NangmanLetterboxServiceImpl implements NangmanLetterboxService {
 
     @Override
     @Transactional
-    public NangmanLetter sendLetter(Long memberId, NangmanLetterboxRequestDTO.SendLetterDTO request){
-        Member member = getMember(memberId);
+    public NangmanLetter sendLetter(String email, NangmanLetterboxRequestDTO.SendLetterDTO request){
+        Member member = getMember(email);
 
         NangmanLetter newNangmanLetter = NangmanLetterBoxConverter.toNangmanLetter(request, member);
 
@@ -53,12 +53,12 @@ public class NangmanLetterboxServiceImpl implements NangmanLetterboxService {
 
     @Override
     @Transactional
-    public List<NangmanLetter> getLetterList(Long memberId, int page, int pageSize){
+    public List<NangmanLetter> getLetterList(String email, int page, int pageSize){
         // 페이지 번호와 페이지 크기를 이용하여 페이징된 편지 목록 조회
         Pageable pageable = PageRequest.of(page, pageSize);
 
         // 사용자가 쓴 고민편지 제외하고 목록 반환
-        Page<NangmanLetter> letterPage = nangmanLetterRepository.findByHasResponseFalseAndMemberIdNot(memberId, pageable);
+        Page<NangmanLetter> letterPage = nangmanLetterRepository.findByHasResponseFalseAndMemberEmailNot(email, pageable);
 
         return letterPage.getContent();
     }
@@ -75,12 +75,12 @@ public class NangmanLetterboxServiceImpl implements NangmanLetterboxService {
 
     @Override
     @Transactional
-    public NangmanLetterBoxResponseDTO.SendReplyResultDTO sendReply(Long memberId, NangmanLetterboxRequestDTO.SendReplyDTO request, Long nangmanLetterId){
+    public NangmanLetterBoxResponseDTO.SendReplyResultDTO sendReply(String email, NangmanLetterboxRequestDTO.SendReplyDTO request, Long nangmanLetterId){
         //멤버 엔티티 조회
-        Member member = getMember(memberId);
+        Member member = getMember(email);
 
         //사용자가 오늘 이미 답장을 작성했는지 확인
-        boolean hasUserRepliedToday = hasUserRepliedToday(memberId);
+        boolean hasUserRepliedToday = hasUserRepliedToday(email);
 
         if (hasUserRepliedToday) {
             throw new RuntimeException("오늘은 이미 답장을 작성했습니다.");
@@ -101,11 +101,11 @@ public class NangmanLetterboxServiceImpl implements NangmanLetterboxService {
 
     }
 
-    public boolean hasUserRepliedToday(Long memberId){
+    public boolean hasUserRepliedToday(String email){
         LocalDate today = LocalDate.now();
 
-        return nangmanReplyRepository.existsByMemberIdAndCreatedAtBetween(
-                memberId,
+        return nangmanReplyRepository.existsByMemberEmailAndCreatedAtBetween(
+                email,
                 today.atStartOfDay(),
                 today.plusDays(1).atStartOfDay().minusSeconds(1)
         );

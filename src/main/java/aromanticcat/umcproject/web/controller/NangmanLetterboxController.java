@@ -3,22 +3,18 @@ package aromanticcat.umcproject.web.controller;
 import aromanticcat.umcproject.apiPayload.ApiResponse;
 import aromanticcat.umcproject.converter.NangmanLetterBoxConverter;
 import aromanticcat.umcproject.entity.NangmanLetter;
+import aromanticcat.umcproject.service.MemberService;
 import aromanticcat.umcproject.service.nangmanLetterboxService.NangmanLetterboxService;
 import aromanticcat.umcproject.service.nangmanLetterboxService.RandomNicknameService;
 import aromanticcat.umcproject.web.dto.nangmanLetterbox.NangmanLetterBoxResponseDTO;
 import aromanticcat.umcproject.web.dto.nangmanLetterbox.NangmanLetterboxRequestDTO;
 import io.swagger.v3.oas.annotations.Operation;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/nangman-letterbox")
@@ -27,6 +23,7 @@ public class NangmanLetterboxController {
 
     private final NangmanLetterboxService nangmanLetterBoxService;
     private final RandomNicknameService randomNicknameService;
+    private final MemberService memberService;
 
     @GetMapping("/random-nickname")
     @Operation(summary = "랜덤 닉네임 생성 API", description = "랜덤 생성된 닉네임을 반환하는 API입니다.")
@@ -49,10 +46,10 @@ public class NangmanLetterboxController {
     public ApiResponse<NangmanLetterBoxResponseDTO.SendLetterResultDTO> sendLetter(
             @RequestBody NangmanLetterboxRequestDTO.SendLetterDTO request) {
         try {
-            Long userId = getCurrentUserId(); // 로그인한 사용자의 아이디를 가져오는 메서드
+            String userEmail = memberService.getUserInfo().getEmail();
 
             //편지 작성 및 발송
-            NangmanLetter nangmanLetter = nangmanLetterBoxService.sendLetter(userId, request);
+            NangmanLetter nangmanLetter = nangmanLetterBoxService.sendLetter(userEmail, request);
 
             //성공 응답 생성
             return ApiResponse.onSuccess(NangmanLetterBoxConverter.toWriteLetterResultDTO(nangmanLetter));
@@ -73,10 +70,11 @@ public class NangmanLetterboxController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "9") int pageSize) {
         try {
-            Long userId = getCurrentUserId(); // 로그인한 사용자의 아이디를 가져오는 메서드
+            String userEmail = memberService.getUserInfo().getEmail();
+
 
             //편지 페이지의 편지 목록 조회
-            List<NangmanLetter> letterList = nangmanLetterBoxService.getLetterList(userId, page, pageSize);
+            List<NangmanLetter> letterList = nangmanLetterBoxService.getLetterList(userEmail, page, pageSize);
 
             //편지 내용의 두 줄만 포함하도록 변환
             List<NangmanLetterBoxResponseDTO.PreviewLetterResultDTO> letterSummaryDTOList = letterList.stream()
@@ -115,9 +113,10 @@ public class NangmanLetterboxController {
     public ApiResponse<NangmanLetterBoxResponseDTO.SendReplyResultDTO> sendReply(@PathVariable Long nangmanLetterId,
                                                                                  @RequestBody NangmanLetterboxRequestDTO.SendReplyDTO request) {
         try {
-            Long userId = getCurrentUserId(); // 로그인한 사용자의 아이디를 가져오는 메서드
+            String userEmail = memberService.getUserInfo().getEmail();
 
-            NangmanLetterBoxResponseDTO.SendReplyResultDTO replyResultDTO = nangmanLetterBoxService.sendReply(userId,
+
+            NangmanLetterBoxResponseDTO.SendReplyResultDTO replyResultDTO = nangmanLetterBoxService.sendReply(userEmail,
                     request, nangmanLetterId);
 
             //성공 응답 생성
@@ -129,11 +128,6 @@ public class NangmanLetterboxController {
             return ApiResponse.onFailure(HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage(), null);
 
         }
-    }
-
-    //스프링 시큐리티 구현되기 전이라 임시 메서드입니다.
-    private Long getCurrentUserId() {
-        return 1L;
     }
 
 

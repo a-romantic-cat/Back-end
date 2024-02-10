@@ -88,11 +88,11 @@ public class NangmanCollectionServiceImpl implements NangmanCollectionService{
     // 사용자 ID로 해당 사용자가 작성한 편지 목록 조회
     @Override
     @Transactional
-    public List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO> getMyLetterList(Long userId, int page, int pageSize){
+    public List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO> getMyLetterList(String email, int page, int pageSize){
 
         Pageable pageable = PageRequest.of(page, pageSize);
 
-        Page<NangmanLetter> myLetterPage = nangmanLetterRepository.findByMemberId(userId, pageable);
+        Page<NangmanLetter> myLetterPage = nangmanLetterRepository.findByMemberEmail(email, pageable);
         List<NangmanLetter> myLetterList = myLetterPage.getContent();
 
         return myLetterList.stream()
@@ -103,11 +103,11 @@ public class NangmanCollectionServiceImpl implements NangmanCollectionService{
 
     @Override
     @Transactional
-    public  List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO> getMyReplyList(Long userId, int page, int pageSize){
+    public  List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO> getMyReplyList(String email, int page, int pageSize){
 
         Pageable pageable = PageRequest.of(page, pageSize);
 
-        Page<NangmanReply> myReplyPage = nangmanReplyRepository.findByMemberId(userId, pageable);
+        Page<NangmanReply> myReplyPage = nangmanReplyRepository.findByMemberEmail(email, pageable);
         List<NangmanReply> myReplyList = myReplyPage.getContent();
 
         // 각 답장(+ 연결된 편지)에 대해 미리보기로 생성

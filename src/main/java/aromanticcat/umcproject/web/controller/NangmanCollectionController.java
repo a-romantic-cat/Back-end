@@ -2,6 +2,7 @@ package aromanticcat.umcproject.web.controller;
 
 
 import aromanticcat.umcproject.apiPayload.ApiResponse;
+import aromanticcat.umcproject.service.MemberService;
 import aromanticcat.umcproject.service.nangmanLetterboxService.NangmanCollectionService;
 import aromanticcat.umcproject.web.dto.nangmanLetterbox.NangmanCollectionResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,6 +18,8 @@ import java.util.List;
 public class NangmanCollectionController {
 
     private final NangmanCollectionService nangmanCollectionService;
+    private final MemberService memberService;
+
 
     @GetMapping("/")
     @Operation(summary = "낭만모음집 목록 조회 API",
@@ -72,12 +75,12 @@ public class NangmanCollectionController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "6") int pageSize) {
         try {
-            // 현재 로그인된 사용자의 ID 또는 정보를 얻어온다고 가정
-            // SecurityContextHolder에서 현재 사용자의 정보를 가져오는 방법
-            Long userId = getCurrentUserId(); // 로그인한 사용자의 아이디를 가져오는 메서드
+
+            String userEmail = memberService.getUserInfo().getEmail();
+
 
             // 사용자가 작성한 편지 목록 조회
-            List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO> userLetterList = nangmanCollectionService.getMyLetterList(userId, page, pageSize);
+            List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO> userLetterList = nangmanCollectionService.getMyLetterList(userEmail, page, pageSize);
 
             // 성공 응답 생성
             return ApiResponse.onSuccess(userLetterList);
@@ -97,23 +100,19 @@ public class NangmanCollectionController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "6") int pageSize) {
         try{
-            // 현재 로그인된 사용자의 ID 또는 정보를 얻어온다고 가정
-            // SecurityContextHolder에서 현재 사용자의 정보를 가져오는 방법
-            Long userId = getCurrentUserId(); // 로그인한 사용자의 아이디를 가져오는 메서드
+
+            String userEmail = memberService.getUserInfo().getEmail();
+
+
 
             // 사용자가 답장한 목록 조회
-            List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO> userReplyList = nangmanCollectionService.getMyReplyList(userId,  page, pageSize);
+            List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO> userReplyList = nangmanCollectionService.getMyReplyList(userEmail,  page, pageSize);
 
             // 성공 응답 생성
             return ApiResponse.onSuccess(userReplyList);
         }catch (Exception e){
             return ApiResponse.onFailure(HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage(), null);
         }
-    }
-
-    //스프링 시큐리티 구현되기 전이라 임시 메서드입니다.
-    private Long getCurrentUserId(){
-        return 1L;
     }
 
 }

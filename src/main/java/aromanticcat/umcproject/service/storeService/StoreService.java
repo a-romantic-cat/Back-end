@@ -6,12 +6,12 @@ import java.util.List;
 
 public interface StoreService {
 
-    List<StoreResponseDTO.LetterPaperResultDTO> findLetterPaperList(Long memberId, int page, int pageSize);
+    List<StoreResponseDTO.LetterPaperResultDTO> findLetterPaperList(String email, int page, int pageSize);
 
-    List<StoreResponseDTO.StampResultDTO> findStampList(Long memberId, int page, int pageSize);
+    List<StoreResponseDTO.StampResultDTO> findStampList(String email, int page, int pageSize);
 
-    void purchasedLetterPaper(Long userId, Long letterPaperId);
+    void purchasedLetterPaper(String email, Long letterPaperId);
 
-    void purchasedStamp(Long userId, Long stampId);
+    void purchasedStamp(String email, Long stampId);
 
 }

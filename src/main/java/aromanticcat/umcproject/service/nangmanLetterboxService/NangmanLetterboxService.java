@@ -8,14 +8,14 @@ import java.util.List;
 
 public interface NangmanLetterboxService {
 
-    NangmanLetter sendLetter(Long memberId, NangmanLetterboxRequestDTO.SendLetterDTO requestDTO);
+    NangmanLetter sendLetter(String email, NangmanLetterboxRequestDTO.SendLetterDTO requestDTO);
 
-    List<NangmanLetter> getLetterList(Long memberId, int page, int pageSize);
+    List<NangmanLetter> getLetterList(String email, int page, int pageSize);
 
     NangmanLetter getLetter(Long nangmanLetterid);
 
     NangmanLetterBoxResponseDTO.SelectedLetterResultDTO getLetterInfo(Long nangmanLetterId);
 
-    NangmanLetterBoxResponseDTO.SendReplyResultDTO sendReply(Long memberId, NangmanLetterboxRequestDTO.SendReplyDTO requestDTO, Long id);
+    NangmanLetterBoxResponseDTO.SendReplyResultDTO sendReply(String email, NangmanLetterboxRequestDTO.SendReplyDTO requestDTO, Long id);
 
 }

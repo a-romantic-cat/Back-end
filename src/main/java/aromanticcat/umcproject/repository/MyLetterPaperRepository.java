@@ -6,6 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MyLetterPaperRepository extends JpaRepository<MyLetterPaper, Long> {
-    Page<MyLetterPaper> findByMemberId(Long memberId, Pageable pageable);
+    Page<MyLetterPaper> findByMemberEmail(String email, Pageable pageable);
 
 }

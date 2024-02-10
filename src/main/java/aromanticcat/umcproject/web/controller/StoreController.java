@@ -1,6 +1,7 @@
 package aromanticcat.umcproject.web.controller;
 
 import aromanticcat.umcproject.apiPayload.ApiResponse;
+import aromanticcat.umcproject.service.MemberService;
 import aromanticcat.umcproject.service.storeService.StoreService;
 import aromanticcat.umcproject.web.dto.store.StoreResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,6 +17,7 @@ import java.util.List;
 public class StoreController {
 
     private final StoreService storeService;
+    private final MemberService memberService;
 
     @GetMapping("/letter-papers")
     @Operation(summary = "상점 편지지 목록 조회 API",
@@ -25,10 +27,10 @@ public class StoreController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "16") int pageSize) {
         try{
-            // 로그인한 사용자의 아이디를 가져오는 메서드
-            Long userId = getCurrentUserId();
+            String userEmail = memberService.getUserInfo().getEmail();
 
-            List<StoreResponseDTO.LetterPaperResultDTO> letterPaperList = storeService.findLetterPaperList(userId, page, pageSize);
+
+            List<StoreResponseDTO.LetterPaperResultDTO> letterPaperList = storeService.findLetterPaperList(userEmail, page, pageSize);
 
             return ApiResponse.onSuccess(letterPaperList);
         } catch (Exception e){
@@ -44,10 +46,9 @@ public class StoreController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "15") int pageSize) {
         try{
-            // 로그인한 사용자의 아이디를 가져오는 메서드
-            Long userId = getCurrentUserId();
+            String userEmail = memberService.getUserInfo().getEmail();
 
-            List<StoreResponseDTO.StampResultDTO> stampList = storeService.findStampList(userId, page, pageSize);
+            List<StoreResponseDTO.StampResultDTO> stampList = storeService.findStampList(userEmail, page, pageSize);
 
             return ApiResponse.onSuccess(stampList);
         } catch (Exception e){
@@ -59,10 +60,10 @@ public class StoreController {
     @Operation(summary = "편지지 구매 API")
     public ApiResponse<String> purchasedLetterPaper(@PathVariable Long letterPaperId) {
         try{
-            // 로그인한 사용자의 아이디를 가져오는 메서드
-            Long userId = getCurrentUserId();
+            String userEmail = memberService.getUserInfo().getEmail();
 
-            storeService.purchasedLetterPaper(userId, letterPaperId);
+
+            storeService.purchasedLetterPaper(userEmail, letterPaperId);
 
             return ApiResponse.onSuccess("편지지를 성공적으로 구매하였습니다.");
 
@@ -76,10 +77,10 @@ public class StoreController {
     @Operation(summary = "우표 구매 API")
     public ApiResponse<String> purchasedStamp(@PathVariable Long stampId) {
         try{
-            // 로그인한 사용자의 아이디를 가져오는 메서드
-            Long userId = getCurrentUserId();
+            String userEmail = memberService.getUserInfo().getEmail();
 
-            storeService.purchasedStamp(userId, stampId);
+
+            storeService.purchasedStamp(userEmail, stampId);
 
             return ApiResponse.onSuccess("우표를 성공적으로 구매하였습니다.");
 
@@ -87,10 +88,5 @@ public class StoreController {
             return ApiResponse.onFailure(HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage(), null);
 
         }
-    }
-
-    //스프링 시큐리티 구현되기 전이라 임시 메서드입니다.
-    private Long getCurrentUserId(){
-        return 1L;
     }
 }

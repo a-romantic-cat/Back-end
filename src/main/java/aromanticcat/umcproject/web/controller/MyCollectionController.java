@@ -1,6 +1,7 @@
 package aromanticcat.umcproject.web.controller;
 
 import aromanticcat.umcproject.apiPayload.ApiResponse;
+import aromanticcat.umcproject.service.MemberService;
 import aromanticcat.umcproject.service.myCollectionService.MyCollectionService;
 import aromanticcat.umcproject.web.dto.MyCollectionResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,6 +20,7 @@ import java.util.List;
 public class MyCollectionController {
 
     private final MyCollectionService myCollectionService;
+    private final MemberService memberService;
 
     @GetMapping("/letter-paper")
     @Operation(summary = "내 수집함 편지지 조회 API",
@@ -28,10 +30,9 @@ public class MyCollectionController {
             @RequestParam(defaultValue = "12") int pageSize,
             @RequestParam(defaultValue = "false")boolean onlyMyDesign) {
         try {
-            // 로그인한 사용자의 아이디를 가져오는 메서드
-            Long userId = getCurrentUserId();
+            String userEmail = memberService.getUserInfo().getEmail();
 
-            List<MyCollectionResponseDTO.AcquiredLetterPaperResultDTO> letterPaperList = myCollectionService.findLetterPaperList(userId, page, pageSize, onlyMyDesign);
+            List<MyCollectionResponseDTO.AcquiredLetterPaperResultDTO> letterPaperList = myCollectionService.findLetterPaperList(userEmail, page, pageSize, onlyMyDesign);
 
             return ApiResponse.onSuccess(letterPaperList);
 
@@ -48,10 +49,10 @@ public class MyCollectionController {
             @RequestParam(defaultValue = "12") int pageSize,
             @RequestParam(defaultValue = "false")boolean onlyMyDesign) {
         try {
-            // 로그인한 사용자의 아이디를 가져오는 메서드
-            Long userId = getCurrentUserId();
+            String userEmail = memberService.getUserInfo().getEmail();
 
-            List<MyCollectionResponseDTO.AcquiredStampResultDTO> stampList = myCollectionService.findStampList(userId, page, pageSize, onlyMyDesign);
+
+            List<MyCollectionResponseDTO.AcquiredStampResultDTO> stampList = myCollectionService.findStampList(userEmail, page, pageSize, onlyMyDesign);
             return ApiResponse.onSuccess(stampList);
 
 
@@ -60,8 +61,5 @@ public class MyCollectionController {
         }
     }
 
-    private Long getCurrentUserId() {
-        return 1L;
-    }
 }
 

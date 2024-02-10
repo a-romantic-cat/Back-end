@@ -33,10 +33,10 @@ public class StoreServiceImpl implements StoreService{
 
     @Override
     @Transactional
-    public List<StoreResponseDTO.LetterPaperResultDTO> findLetterPaperList(Long memberId, int page, int pageSize){
+    public List<StoreResponseDTO.LetterPaperResultDTO> findLetterPaperList(String email, int page, int pageSize){
 
         // 사용자가 구매한 아이템 목록 조회
-        List<AcquiredItem> acquiredItemList = acquiredItemRepository.findByMemberId(memberId);
+        List<AcquiredItem> acquiredItemList = acquiredItemRepository.findByMemberEmail(email);
 
         // 모든 편지지 목록 조회
         Pageable pageable = PageRequest.of(page, pageSize);
@@ -52,10 +52,10 @@ public class StoreServiceImpl implements StoreService{
 
     @Override
     @Transactional
-    public List<StoreResponseDTO.StampResultDTO> findStampList(Long memberId, int page, int pageSize){
+    public List<StoreResponseDTO.StampResultDTO> findStampList(String email, int page, int pageSize){
 
         // 사용자가 구매한 아이템 목록 조회
-        List<AcquiredItem> acquiredItemist = acquiredItemRepository.findByMemberId(memberId);
+        List<AcquiredItem> acquiredItemist = acquiredItemRepository.findByMemberEmail(email);
 
 
         // 모든 우표 목록 조회
@@ -73,12 +73,12 @@ public class StoreServiceImpl implements StoreService{
 
     @Override
     @Transactional
-    public void purchasedLetterPaper(Long userId, Long letterPaperId){
+    public void purchasedLetterPaper(String email, Long letterPaperId){
         // 사용자가 이미 편지를 구매했는지 확인
-        boolean isAlreadyPurchased = acquiredItemRepository.existsByMemberIdAndLetterPaperId(userId, letterPaperId);
+        boolean isAlreadyPurchased = acquiredItemRepository.existsByMemberEmailAndLetterPaperId(email, letterPaperId);
 
         if(!isAlreadyPurchased){
-            Member member = memberRepository.findById(userId).orElseThrow(()-> new IllegalArgumentException("해당 ID에 해당하는 사용자를 찾을 수 없습니다."));
+            Member member = memberRepository.findByEmail(email).orElseThrow(()-> new IllegalArgumentException("해당 ID에 해당하는 사용자를 찾을 수 없습니다."));
 
             LetterPaper letterPaper = letterPaperRepository.findById(letterPaperId).orElseThrow(() -> new IllegalArgumentException("해당 ID에 해당하는 편지지를 찾을 수 없습니다."));
 
@@ -105,12 +105,12 @@ public class StoreServiceImpl implements StoreService{
 
     @Override
     @Transactional
-    public void purchasedStamp(Long userId, Long stampId){
+    public void purchasedStamp(String email, Long stampId){
         // 사용자가 이미 우표를 구매했는지 확인
-        boolean isAlreadyPurchased = acquiredItemRepository.existsByMemberIdAndStampId(userId, stampId);
+        boolean isAlreadyPurchased = acquiredItemRepository.existsByMemberEmailAndStampId(email, stampId);
 
         if(!isAlreadyPurchased){
-            Member member = memberRepository.findById(userId).orElseThrow(()-> new IllegalArgumentException("해당 ID에 해당하는 사용자를 찾을 수 없습니다."));
+            Member member = memberRepository.findByEmail(email).orElseThrow(()-> new IllegalArgumentException("해당 ID에 해당하는 사용자를 찾을 수 없습니다."));
 
             Stamp stamp = stampRepository.findById(stampId).orElseThrow(() -> new IllegalArgumentException("해당 ID에 해당하는 우표를 찾을 수 없습니다."));
 

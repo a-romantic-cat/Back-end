@@ -9,13 +9,13 @@ import java.util.List;
 
 public interface AcquiredItemRepository extends JpaRepository<AcquiredItem, Long>{
 
-    List<AcquiredItem> findByMemberId(Long memberId);
-    Page<AcquiredItem> findByMemberIdAndLetterPaperIdIsNotNull(Long memberId, Pageable pageable);
-    Page<AcquiredItem> findByMemberIdAndStampIdIsNotNull(Long memberId, Pageable pageable);
+    List<AcquiredItem> findByMemberEmail(String email);
+    Page<AcquiredItem> findByMemberEmailAndLetterPaperIdIsNotNull(String email, Pageable pageable);
+    Page<AcquiredItem> findByMemberEmailAndStampIdIsNotNull(String email, Pageable pageable);
 
 
-    boolean existsByMemberIdAndLetterPaperId(Long userId, Long letterPaperId);
-    boolean existsByMemberIdAndStampId(Long userId, Long stampId);
+    boolean existsByMemberEmailAndLetterPaperId(String email, Long letterPaperId);
+    boolean existsByMemberEmailAndStampId(String email, Long stampId);
 
 
 

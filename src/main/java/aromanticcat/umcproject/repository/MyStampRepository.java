@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MyStampRepository extends JpaRepository<MyStamp, Long> {
 
-    Page<MyStamp> findByMemberId(Long memberId, Pageable pageable);
+    Page<MyStamp> findByMemberEmail(String email, Pageable pageable);
 
 }

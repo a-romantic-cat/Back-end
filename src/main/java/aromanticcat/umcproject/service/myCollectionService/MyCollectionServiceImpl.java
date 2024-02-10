@@ -30,12 +30,12 @@ public class MyCollectionServiceImpl implements MyCollectionService {
 
     @Override
     @Transactional
-    public List<MyCollectionResponseDTO.AcquiredLetterPaperResultDTO> findLetterPaperList(Long memberId, int page, int pageSize, boolean onlyMyDesign) {
+    public List<MyCollectionResponseDTO.AcquiredLetterPaperResultDTO> findLetterPaperList(String email, int page, int pageSize, boolean onlyMyDesign) {
         Pageable pageable = PageRequest.of(page, pageSize);
         List<MyCollectionResponseDTO.AcquiredLetterPaperResultDTO> responseDTOs;
 
         if(onlyMyDesign) {
-            Page<MyLetterPaper> myLetterPaperPage = myLetterPaperRepository.findByMemberId(memberId, pageable);
+            Page<MyLetterPaper> myLetterPaperPage = myLetterPaperRepository.findByMemberEmail(email, pageable);
             List<MyLetterPaper> myLetterPaperList = myLetterPaperPage.getContent();
 
             responseDTOs = myLetterPaperList.stream()
@@ -43,11 +43,11 @@ public class MyCollectionServiceImpl implements MyCollectionService {
                     .collect(Collectors.toList());
         }else {
             // 사용자가 구매한 편지지 목록 조회
-            Page<AcquiredItem> acquiredLetterPaperPage = acquiredItemRepository.findByMemberIdAndLetterPaperIdIsNotNull(memberId, pageable);
+            Page<AcquiredItem> acquiredLetterPaperPage = acquiredItemRepository.findByMemberEmailAndLetterPaperIdIsNotNull(email, pageable);
             List<AcquiredItem> acquiredLetterPaperList = acquiredLetterPaperPage.getContent();
 
             // 마이 디자인 편지지 목록 조회
-            Page<MyLetterPaper> myLetterPaperPage = myLetterPaperRepository.findByMemberId(memberId, pageable);
+            Page<MyLetterPaper> myLetterPaperPage = myLetterPaperRepository.findByMemberEmail(email, pageable);
             List<MyLetterPaper> myLetterPaperList = myLetterPaperPage.getContent();
 
             // MyLetterPaper와 AcquredItem에서 가져온 편지지 목록 병합
@@ -69,12 +69,12 @@ public class MyCollectionServiceImpl implements MyCollectionService {
 
     @Override
     @Transactional
-    public List<MyCollectionResponseDTO.AcquiredStampResultDTO> findStampList(Long memberId, int page, int pageSize, boolean onlyMyDesign) {
+    public List<MyCollectionResponseDTO.AcquiredStampResultDTO> findStampList(String email, int page, int pageSize, boolean onlyMyDesign) {
         Pageable pageable = PageRequest.of(page, pageSize);
         List<MyCollectionResponseDTO.AcquiredStampResultDTO> responseDTOs;
 
         if(onlyMyDesign){
-            Page<MyStamp> myStampPage = myStampRepository.findByMemberId(memberId, pageable);
+            Page<MyStamp> myStampPage = myStampRepository.findByMemberEmail(email, pageable);
 
             List<MyStamp> myStampList = myStampPage.getContent();
 
@@ -83,11 +83,11 @@ public class MyCollectionServiceImpl implements MyCollectionService {
                     .collect(Collectors.toList());
         }else{
             // 사용자가 구매한 우표 목록 조회
-            Page<AcquiredItem> acquiredStampPage = acquiredItemRepository.findByMemberIdAndStampIdIsNotNull(memberId, pageable);
+            Page<AcquiredItem> acquiredStampPage = acquiredItemRepository.findByMemberEmailAndStampIdIsNotNull(email, pageable);
             List<AcquiredItem> acquiredStampList = acquiredStampPage.getContent();
 
             // 마이 디자인 우표 목록 조회
-            Page<MyStamp> myStampPage = myStampRepository.findByMemberId(memberId, pageable);
+            Page<MyStamp> myStampPage = myStampRepository.findByMemberEmail(email, pageable);
             List<MyStamp> myStampList = myStampPage.getContent();
 
             // MyStamp와 AcquredItem에서 가져온 우표 목록 병합

@@ -9,9 +9,9 @@ import java.time.LocalDateTime;
 
 public interface NangmanReplyRepository extends JpaRepository<NangmanReply, Long> {
 
-    boolean existsByMemberIdAndCreatedAtBetween(Long memberId, LocalDateTime start, LocalDateTime end);
+    boolean existsByMemberEmailAndCreatedAtBetween(String email, LocalDateTime start, LocalDateTime end);
 
-    Page<NangmanReply> findByMemberId(Long memberId, Pageable pageable);
+    Page<NangmanReply> findByMemberEmail(String email, Pageable pageable);
 
     NangmanReply findByNangmanLetter_Id(Long nangmanLetterId);
 }

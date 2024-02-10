@@ -12,8 +12,8 @@ public interface NangmanCollectionService {
 
     void likeCollection(Long nangmanLetterId,String emojiType);
 
-    List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO> getMyLetterList(Long userId, int page, int pageSize);
+    List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO> getMyLetterList(String email, int page, int pageSize);
 
-    List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO> getMyReplyList(Long userId, int page, int pageSize);
+    List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO> getMyReplyList(String email, int page, int pageSize);
 
 }

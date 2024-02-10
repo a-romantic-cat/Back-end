@@ -7,11 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface NangmanLetterRepository extends JpaRepository<NangmanLetter, Long> {
 
-    Page<NangmanLetter> findByHasResponseFalseAndMemberIdNot(Long memerId, Pageable pageable);
+    Page<NangmanLetter> findByHasResponseFalseAndMemberEmailNot(String email, Pageable pageable);
 
-    Page<NangmanLetter> findByMemberId(Long memberId, Pageable pageable);
+    Page<NangmanLetter> findByMemberEmail(String email, Pageable pageable);
 
-    NangmanLetter findByMemberIdAndId(Long memberId, Long Id);
+    NangmanLetter findByMemberEmailAndId(String email, Long Id);
 
     Page<NangmanLetter> findByIsPublicTrueAndHasResponseTrue(Pageable pageable);
 
