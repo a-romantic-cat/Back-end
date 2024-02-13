@@ -6,7 +6,7 @@ import aromanticcat.umcproject.security.StatusResponseDto;
 import aromanticcat.umcproject.security.jwt.JwtUtil;
 import aromanticcat.umcproject.security.jwt.RefreshToken;
 import aromanticcat.umcproject.security.jwt.RefreshTokenService;
-import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class AuthController {
     private final JwtUtil jwtUtil;
 
     @PostMapping("token/logout")
-    @Operation(summary = "로그아웃 API", description = " 엑세스 토큰으로 현재 Redis 정보를 삭제하는 API입니다.")
+    @ApiOperation(value = "로그아웃 API", notes = " 엑세스 토큰으로 현재 Redis 정보를 삭제하는 API입니다.")
     public ApiResponse<StatusResponseDto> logout(@RequestHeader("Authorization") final String accessToken) {
 
         // 엑세스 토큰으로 현재 Redis 정보 삭제
@@ -39,7 +39,7 @@ public class AuthController {
     }
 
     @PostMapping("/token/refresh")
-    @Operation(summary = "액세스 토큰 재발급 API", description = " 엑세스 토큰을 재발급하는 API입니다.")
+    @ApiOperation(value = "액세스 토큰 재발급 API", notes = " 엑세스 토큰을 재발급하는 API입니다.")
     public ResponseEntity<TokenResponseStatus> refresh(@RequestHeader("Authorization") final String accessToken) {
 
         // 액세스 토큰으로 Refresh 토큰 객체를 조회
