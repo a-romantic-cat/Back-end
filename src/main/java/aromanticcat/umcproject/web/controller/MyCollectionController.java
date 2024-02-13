@@ -21,7 +21,7 @@ public class MyCollectionController {
     private final MemberService memberService;
 
     @GetMapping("/letter-paper")
-    @Operation(summary = "내 수집함 편지지 조회 API",
+    @Operation(summary = "내 수집함 편지지 조회 APIIIIIIIIIII",
             description = "페이징을 포함합니다. query String으로 page(기본값 0)와 pageSize(기본값 12)를 주세요.")
     public ApiResponse<List<MyCollectionResponseDTO.AcquiredLetterPaperResultDTO>> getMyLetterPaperList(
             @RequestParam(defaultValue = "0") int page,
