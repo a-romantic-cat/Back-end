@@ -7,16 +7,19 @@ import aromanticcat.umcproject.security.jwt.JwtUtil;
 import aromanticcat.umcproject.security.jwt.RefreshToken;
 import aromanticcat.umcproject.security.jwt.RefreshTokenService;
 import io.swagger.v3.oas.annotations.Operation;
-import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
+@CrossOrigin(origins = "https://dev.nangmancat.shop")
 @Slf4j
 @RestController
 @RequiredArgsConstructor

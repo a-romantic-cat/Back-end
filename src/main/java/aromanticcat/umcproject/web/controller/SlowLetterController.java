@@ -1,21 +1,20 @@
 package aromanticcat.umcproject.web.controller;
 
+import aromanticcat.umcproject.apiPayload.ApiResponse;
 import aromanticcat.umcproject.entity.SlowLetter;
 import aromanticcat.umcproject.service.slowLetter.SlowLetterService;
-import aromanticcat.umcproject.web.dto.Letterbox.LetterResponse;
 import aromanticcat.umcproject.web.dto.slowLetter.SlowLetterCalResponse;
 import aromanticcat.umcproject.web.dto.slowLetter.SlowLetterGetResponse;
 import aromanticcat.umcproject.web.dto.slowLetter.SlowLetterRequest;
 import aromanticcat.umcproject.web.dto.slowLetter.SlowLetterResponse;
 import io.swagger.annotations.ApiOperation;
-import aromanticcat.umcproject.apiPayload.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
+@CrossOrigin(origins = "https://dev.nangmancat.shop")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/slow_letters")

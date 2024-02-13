@@ -2,7 +2,6 @@ package aromanticcat.umcproject.web.controller;
 
 import aromanticcat.umcproject.apiPayload.ApiResponse;
 import aromanticcat.umcproject.service.myCollectionService.MyDesignService;
-import aromanticcat.umcproject.web.dto.Letterbox.LetterResponse;
 import aromanticcat.umcproject.web.dto.MyDesign.MyDesignGetResponse;
 import aromanticcat.umcproject.web.dto.MyDesign.MyDesignRequest;
 import io.swagger.annotations.ApiOperation;
@@ -14,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
+@CrossOrigin(origins = "https://dev.nangmancat.shop")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/myDesign")

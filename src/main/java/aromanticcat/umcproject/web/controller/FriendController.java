@@ -5,21 +5,20 @@ import aromanticcat.umcproject.apiPayload.ApiResponse;
 import aromanticcat.umcproject.converter.FriendConverter;
 import aromanticcat.umcproject.entity.Friend;
 import aromanticcat.umcproject.service.FriendService.FriendCommandService;
-import aromanticcat.umcproject.service.MemberService;
-import aromanticcat.umcproject.web.dto.Friend.FriendRequestDTO;
-import aromanticcat.umcproject.web.dto.Friend.FriendResponseDTO;
 import aromanticcat.umcproject.service.FriendService.FriendQueryService;
+import aromanticcat.umcproject.service.MemberService;
+import aromanticcat.umcproject.web.dto.Friend.FriendResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@CrossOrigin(origins = "https://dev.nangmancat.shop")
 @RestController
 @RequestMapping("/address-book")
 @RequiredArgsConstructor

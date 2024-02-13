@@ -5,8 +5,6 @@ import aromanticcat.umcproject.service.MemberService;
 import aromanticcat.umcproject.service.MissionService.MissionCommandService;
 import aromanticcat.umcproject.service.MissionService.MissionQueryService;
 import aromanticcat.umcproject.web.dto.Mission.MissionResponseDTO;
-import aromanticcat.umcproject.web.dto.nangmanLetterbox.NangmanCollectionResponseDTO;
-import aromanticcat.umcproject.web.dto.store.StoreResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "https://dev.nangmancat.shop")
 @RestController
 @RequestMapping("/missions")
 @RequiredArgsConstructor
