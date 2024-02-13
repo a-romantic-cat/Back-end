@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
-@CrossOrigin(origins = "https://dev.nangmancat.shop")
 @Slf4j
 @RestController
 @RequiredArgsConstructor

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@CrossOrigin(origins = "https://dev.nangmancat.shop")
 @RestController
 @RequestMapping("/nangman-letterbox")
 @RequiredArgsConstructor

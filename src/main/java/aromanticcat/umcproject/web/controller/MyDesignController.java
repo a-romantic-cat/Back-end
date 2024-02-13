@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
-@CrossOrigin(origins = "https://dev.nangmancat.shop")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/myDesign")

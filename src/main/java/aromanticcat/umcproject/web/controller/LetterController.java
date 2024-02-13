@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "https://dev.nangmancat.shop")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/letters")
