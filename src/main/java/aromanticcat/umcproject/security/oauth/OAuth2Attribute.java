@@ -1,11 +1,11 @@
 package aromanticcat.umcproject.security.oauth;
 
-import java.util.HashMap;
-import java.util.Map;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
+import java.util.HashMap;
+import java.util.Map;
 
 @ToString
 @Builder(access = AccessLevel.PRIVATE) // Builder 메서드를 외부에서 사용하지 않으므로, Private 제어자로 지정
