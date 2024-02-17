@@ -4,7 +4,7 @@ import aromanticcat.umcproject.apiPayload.ApiResponse;
 import aromanticcat.umcproject.service.MemberService;
 import aromanticcat.umcproject.service.storeService.StoreService;
 import aromanticcat.umcproject.web.dto.store.StoreResponseDTO;
-import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +20,8 @@ public class StoreController {
     private final MemberService memberService;
 
     @GetMapping("/letter-papers")
-    @Operation(summary = "상점 편지지 목록 조회 API",
-            description = "사용자가 이미 구매한 편지지는 가격을 null로 반환합니다. " +
+    @ApiOperation(value = "상점 편지지 목록 조회 API",
+            notes = "사용자가 이미 구매한 편지지는 가격을 null로 반환합니다. " +
                     "페이징을 포함합니다. query String으로 page(기본값 0)와 pageSize(기본값 16)를 주세요.")
     public ApiResponse<List<StoreResponseDTO.LetterPaperResultDTO>> getAllLetterPaperList(
             @RequestParam(defaultValue = "0") int page,
@@ -39,8 +39,8 @@ public class StoreController {
     }
 
     @GetMapping("/stamps")
-    @Operation(summary = "상점 우표 목록 조회 API",
-            description = "사용자가 이미 구매한 우표는 가격을 null로 반환합니다. " +
+    @ApiOperation(value = "상점 우표 목록 조회 API",
+            notes = "사용자가 이미 구매한 우표는 가격을 null로 반환합니다. " +
                     "페이징을 포함합니다. query String으로 page(기본값 0)와 pageSize(기본값 15)를 주세요.")
     public ApiResponse<List<StoreResponseDTO.StampResultDTO>> getAllStampList(
             @RequestParam(defaultValue = "0") int page,
@@ -57,7 +57,7 @@ public class StoreController {
     }
 
     @PostMapping("/letter-papers/{letterPaperId}")
-    @Operation(summary = "편지지 구매 API")
+    @ApiOperation(value = "편지지 구매 API")
     public ApiResponse<String> purchasedLetterPaper(@PathVariable Long letterPaperId) {
         try {
             String userEmail = memberService.getUserInfo().getEmail();
@@ -73,7 +73,7 @@ public class StoreController {
     }
 
     @PostMapping("/stamps/{stampId}")
-    @Operation(summary = "우표 구매 API")
+    @ApiOperation(value = "우표 구매 API")
     public ApiResponse<String> purchasedStamp(@PathVariable Long stampId) {
         try {
             String userEmail = memberService.getUserInfo().getEmail();

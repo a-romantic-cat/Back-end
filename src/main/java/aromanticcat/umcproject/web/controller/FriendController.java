@@ -9,18 +9,15 @@ import aromanticcat.umcproject.service.FriendService.FriendQueryService;
 import aromanticcat.umcproject.service.MemberService;
 import aromanticcat.umcproject.web.dto.Friend.FriendResponseDTO;
 import aromanticcat.umcproject.web.dto.Friend.FriendResponseDTO.WaitingFriendDTO;
-import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/address-book")
@@ -32,7 +29,7 @@ public class FriendController {
     private final MemberService memberService;
 
     @GetMapping("/")
-    @Operation(summary = "사용자의 주소록에 있는 친구들 조회 API", description = "페이징 포함을 포함합니다, query String으로 page 번호를 주세요.")
+    @ApiOperation(value = "사용자의 주소록에 있는 친구들 조회 API", notes = "페이징 포함을 포함합니다, query String으로 page 번호를 주세요.")
     @Parameters({
             @Parameter(name = "page", description = "페이지 번호, 0번이 1번 페이지 입니다.")
     })
@@ -53,7 +50,7 @@ public class FriendController {
     }
 
     @GetMapping("/close-friends")
-    @Operation(summary = "사용자의 주소록에 있는 친한 친구들 조회 API", description = "페이징 포함을 포함합니다, query String으로 page 번호를 주세요.")
+    @ApiOperation(value = "사용자의 주소록에 있는 친한 친구들 조회 API", notes = "페이징 포함을 포함합니다, query String으로 page 번호를 주세요.")
     @Parameters({
             @Parameter(name = "page", description = "페이지 번호, 0번이 1번 페이지 입니다.")
     })
@@ -76,7 +73,7 @@ public class FriendController {
     }
 
     @GetMapping("/search/friend")
-    @Operation(summary = "친구 이름 또는 친구 아이디(우편번호)를 통한 검색 API", description = "query String으로 친구 정보를 주세요.")
+    @ApiOperation(value = "친구 이름 또는 친구 아이디(우편번호)를 통한 검색 API", notes = "query String으로 친구 정보를 주세요.")
     @Parameters({
             @Parameter(name = "friend_info", description = "검색하고자 하는 친구 정보(닉네임 혹은 아이디), query string입니다!")
     })
@@ -104,7 +101,7 @@ public class FriendController {
     }
 
     @PostMapping("/friend/request")
-    @Operation(summary = "친구 추가 API", description = "query String으로 추가하려는 친구의 우편함 번호를 알려주세요.")
+    @ApiOperation(value = "친구 추가 API", notes = "query String으로 추가하려는 친구의 우편함 번호를 알려주세요.")
     @Parameters({
             @Parameter(name = "to_member_Id", description = "친구 추가 하고자 하는 친구 아이디(우편번호), query string입니다!")
     })
@@ -124,7 +121,7 @@ public class FriendController {
     }
 
     @GetMapping("/recieved")
-    @Operation(summary = "사용자가 친구 추가 받은 요청 조회 API")
+    @ApiOperation(value = "사용자가 친구 추가 받은 요청 조회 API")
     public ApiResponse<List<FriendResponseDTO.WaitingFriendDTO>> getReceivedFriendList() {
         try {
             String userEmail = memberService.getUserInfo().getEmail();
@@ -146,7 +143,7 @@ public class FriendController {
     }
 
     @GetMapping("/requested")
-    @Operation(summary = "사용자가 친구 추가 보낸 요청 조회 API")
+    @ApiOperation(value = "사용자가 친구 추가 보낸 요청 조회 API")
 
     public ApiResponse<List<FriendResponseDTO.WaitingFriendDTO>> getRequestedFriendList() {
         try {
@@ -169,7 +166,7 @@ public class FriendController {
     }
 
     @PostMapping("/request/approve")
-    @Operation(summary = "친구 요청 수락 API", description = "query String으로 친구 요청을 보낸 친구의 아이디를 알려주세요")
+    @ApiOperation(value = "친구 요청 수락 API", notes = "query String으로 친구 요청을 보낸 친구의 아이디를 알려주세요")
     @Parameters({
             @Parameter(name = "friend_id", description = "친구 추가 요청을 보낸 친구의 아이디, query string입니다!")
     })
@@ -189,7 +186,7 @@ public class FriendController {
     }
 
     @PostMapping("/request/reject")
-    @Operation(summary = "친구 요청 거절 API", description = "query String으로 친구 요청을 보낸 친구의 아이디를 알려주세요")
+    @ApiOperation(value = "친구 요청 거절 API", notes = "query String으로 친구 요청을 보낸 친구의 아이디를 알려주세요")
     @Parameters({
             @Parameter(name = "friend_id", description = "친구 추가 요청을 보낸 친구의 아이디, query string입니다!")
     })
@@ -209,7 +206,7 @@ public class FriendController {
     }
 
     @PostMapping("/close-friend/register")
-    @Operation(summary = "친한 친구 등록 API", description = "query String으로 친한 친구로 등록하려는 친구 아이디를 알려주세요.")
+    @ApiOperation(value = "친한 친구 등록 API", notes = "query String으로 친한 친구로 등록하려는 친구 아이디를 알려주세요.")
     @Parameters({
             @Parameter(name = "friend_id", description = "친한 친구로 등록하려는 친구의 아이디, query string입니다!")
     })
