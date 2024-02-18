@@ -26,16 +26,25 @@ public class NangmanCollectionServiceImpl implements NangmanCollectionService{
 
     @Override
     @Transactional
-    public List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO> findCollection(int page, int pageSize){
+    public List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO> findCollection(int page, int pageSize, String sort){
         Pageable pageable = PageRequest.of(page, pageSize);
 
-        Page<NangmanLetter> letterPage = nangmanLetterRepository.findByIsPublicTrueAndHasResponseTrue(pageable);
+        if(sort.equals("popular")){
+            Page<NangmanLetter> letterPage = nangmanLetterRepository.findPopularLetters(pageable);
 
-        List<NangmanLetter> letterList = letterPage.getContent();
+            List<NangmanLetter> letterList = letterPage.getContent();
+            return letterList.stream()
+                    .map(letter -> NangmanCollectionConverter.toPreviewBothResultDTO(letter))
+                    .collect(Collectors.toList());
 
-        return letterList.stream()
-                .map(letter -> NangmanCollectionConverter.toPreviewBothResultDTO(letter))
-                .collect(Collectors.toList());
+        } else{
+            Page<NangmanLetter> letterPage = nangmanLetterRepository.findLatestLetters(pageable);
+
+            List<NangmanLetter> letterList = letterPage.getContent();
+            return letterList.stream()
+                    .map(letter -> NangmanCollectionConverter.toPreviewBothResultDTO(letter))
+                    .collect(Collectors.toList());
+        }
     }
 
     @Override

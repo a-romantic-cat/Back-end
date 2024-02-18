@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface NangmanCollectionService {
 
-    List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO> findCollection(int page, int pageSize);
+    List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO> findCollection(int page, int pageSize, String sort);
 
     NangmanCollectionResponseDTO.LetterAndReplyResultDTO findCollectionDetails(Long nangmanLetterId);
 

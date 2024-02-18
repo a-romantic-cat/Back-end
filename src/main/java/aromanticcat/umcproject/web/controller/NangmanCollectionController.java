@@ -6,15 +6,11 @@ import aromanticcat.umcproject.service.MemberService;
 import aromanticcat.umcproject.service.nangmanLetterboxService.NangmanCollectionService;
 import aromanticcat.umcproject.web.dto.nangmanLetterbox.NangmanCollectionResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/nangman-collection")
@@ -27,14 +23,18 @@ public class NangmanCollectionController {
 
     @GetMapping("/")
     @Operation(summary = "낭만모음집 목록 조회 API",
-            description = "페이징을 포함합니다. query String으로 page(기본값 0)와 pageSize(기본값 12)를 주세요." +
+            description = "페이징을 포함합니다. query String으로 page(기본값 0)와 pageSize(기본값 12)를 주세요. " +
+                    "sort(정렬 방식, 기본값 'popular')을 주세요. 정렬 방식은 'latest' 또는 'popular' 입니다. " +
                     "낭만 편지의 내용(40자) + 답장 내용(40자)을 반환합니다.")
     public ApiResponse<List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO>> CollectionList(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "12") int pageSize) {
+            @RequestParam(defaultValue = "12") int pageSize,
+            @RequestParam(defaultValue = "latest") String sort) {
         try {
-            List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO> collection = nangmanCollectionService.findCollection(
-                    page, pageSize);
+            List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO> collection;
+            collection = nangmanCollectionService.findCollection(page, pageSize, sort);
+
+
 
             return ApiResponse.onSuccess(collection);
         } catch (Exception e) {
