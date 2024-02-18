@@ -22,15 +22,17 @@ public class StoreController {
     @GetMapping("/letter-papers")
     @ApiOperation(value = "상점 편지지 목록 조회 API",
             notes = "사용자가 이미 구매한 편지지는 가격을 null로 반환합니다. " +
-                    "페이징을 포함합니다. query String으로 page(기본값 0)와 pageSize(기본값 16)를 주세요.")
+                    "페이징을 포함합니다. query String으로 page(기본값 0)와 pageSize(기본값 16)를 주세요. " +
+                    "sort(정렬 방식, 기본값 'latest')를 주세요. 정렬 방식은 'alphabetical', 'popular', " +
+                    "'latest', 'low_price', 'high_price' 중 하나입니다.")
     public ApiResponse<List<StoreResponseDTO.LetterPaperResultDTO>> getAllLetterPaperList(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "16") int pageSize) {
+            @RequestParam(defaultValue = "16") int pageSize,
+            @RequestParam(defaultValue = "latest") String sort) {
         try {
             String userEmail = memberService.getUserInfo().getEmail();
 
-            List<StoreResponseDTO.LetterPaperResultDTO> letterPaperList = storeService.findLetterPaperList(userEmail,
-                    page, pageSize);
+            List<StoreResponseDTO.LetterPaperResultDTO> letterPaperList = storeService.findLetterPaperList(userEmail, page, pageSize, sort);
 
             return ApiResponse.onSuccess(letterPaperList);
         } catch (Exception e) {
@@ -41,14 +43,17 @@ public class StoreController {
     @GetMapping("/stamps")
     @ApiOperation(value = "상점 우표 목록 조회 API",
             notes = "사용자가 이미 구매한 우표는 가격을 null로 반환합니다. " +
-                    "페이징을 포함합니다. query String으로 page(기본값 0)와 pageSize(기본값 15)를 주세요.")
+                    "페이징을 포함합니다. query String으로 page(기본값 0)와 pageSize(기본값 15)를 주세요. " +
+                    "sort(정렬 방식, 기본값 'latest')를 주세요. 정렬 방식은 'alphabetical', 'popular', " +
+                    "'latest', 'low_price', 'high_price' 중 하나입니다.")
     public ApiResponse<List<StoreResponseDTO.StampResultDTO>> getAllStampList(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "15") int pageSize) {
+            @RequestParam(defaultValue = "15") int pageSize,
+            @RequestParam(defaultValue = "latest") String sort) {
         try {
             String userEmail = memberService.getUserInfo().getEmail();
 
-            List<StoreResponseDTO.StampResultDTO> stampList = storeService.findStampList(userEmail, page, pageSize);
+            List<StoreResponseDTO.StampResultDTO> stampList = storeService.findStampList(userEmail, page, pageSize, sort);
 
             return ApiResponse.onSuccess(stampList);
         } catch (Exception e) {

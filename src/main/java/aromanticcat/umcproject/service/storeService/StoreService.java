@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface StoreService {
 
-    List<StoreResponseDTO.LetterPaperResultDTO> findLetterPaperList(String email, int page, int pageSize);
+    List<StoreResponseDTO.LetterPaperResultDTO> findLetterPaperList(String email, int page, int pageSize, String sort);
 
-    List<StoreResponseDTO.StampResultDTO> findStampList(String email, int page, int pageSize);
+    List<StoreResponseDTO.StampResultDTO> findStampList(String email, int page, int pageSize, String sort);
 
     void purchasedLetterPaper(String email, Long letterPaperId);
 
