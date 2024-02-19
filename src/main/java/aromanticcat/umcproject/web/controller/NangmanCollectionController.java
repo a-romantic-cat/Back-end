@@ -7,10 +7,9 @@ import aromanticcat.umcproject.service.nangmanLetterboxService.NangmanCollection
 import aromanticcat.umcproject.web.dto.nangmanLetterbox.NangmanCollectionResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/nangman-collection")
@@ -26,12 +25,12 @@ public class NangmanCollectionController {
             description = "페이징을 포함합니다. query String으로 page(기본값 0)와 pageSize(기본값 12)를 주세요. " +
                     "sort(정렬 방식, 기본값 'popular')을 주세요. 정렬 방식은 'latest' 또는 'popular' 입니다. " +
                     "낭만 편지의 내용(40자) + 답장 내용(40자)을 반환합니다.")
-    public ApiResponse<List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO>> CollectionList(
+    public ApiResponse<Page<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO>> CollectionList(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "12") int pageSize,
             @RequestParam(defaultValue = "latest") String sort) {
         try {
-            List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO> collection;
+            Page<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO> collection;
             collection = nangmanCollectionService.findCollection(page, pageSize, sort);
 
 
@@ -78,7 +77,7 @@ public class NangmanCollectionController {
             description = "사용자가 작성한 편지 목록을 조회하는 API입니다." +
                     "편지(40자) + 답장(답장이 있을 경우 40자) + 공감수(공개 편지인 경우)를 반환합니다." +
                     "페이징을 포함합니다. query String으로 page(기본값 0)와 pageSize(기본값 6)를 주세요.")
-    public ApiResponse<List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO>> getMyNangmanLetters(
+    public ApiResponse<Page<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO>> getMyNangmanLetters(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "6") int pageSize) {
         try {
@@ -86,11 +85,11 @@ public class NangmanCollectionController {
             String userEmail = memberService.getUserInfo().getEmail();
 
             // 사용자가 작성한 편지 목록 조회
-            List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO> userLetterList = nangmanCollectionService.getMyLetterList(
+            Page<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO> userLetterPage = nangmanCollectionService.getMyLetterPage(
                     userEmail, page, pageSize);
 
             // 성공 응답 생성
-            return ApiResponse.onSuccess(userLetterList);
+            return ApiResponse.onSuccess(userLetterPage);
         } catch (Exception e) {
             // 에러 발생 시 실패 응답 반환
             return ApiResponse.onFailure(HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage(), null);
@@ -103,7 +102,7 @@ public class NangmanCollectionController {
             description = "사용자가 답장한 목록을 조회하는 API입니다." +
                     "연결된 낭만 편지의 내용(40자) + 답장 내용(40자) + 공감 수(공개된 편지일 경우)를 반환합니다." +
                     "페이징을 포함합니다. query String으로 page(기본값 0)와 pageSize(기본값 6)를 주세요.")
-    public ApiResponse<List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO>> getMyNangmanReplies(
+    public ApiResponse<Page<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO>> getMyNangmanReplies(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "6") int pageSize) {
         try {
@@ -111,11 +110,11 @@ public class NangmanCollectionController {
             String userEmail = memberService.getUserInfo().getEmail();
 
             // 사용자가 답장한 목록 조회
-            List<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO> userReplyList = nangmanCollectionService.getMyReplyList(
+            Page<NangmanCollectionResponseDTO.PreviewLetterAndReplyResultDTO> userReplyPage = nangmanCollectionService.getMyReplyPage(
                     userEmail, page, pageSize);
 
             // 성공 응답 생성
-            return ApiResponse.onSuccess(userReplyList);
+            return ApiResponse.onSuccess(userReplyPage);
         } catch (Exception e) {
             return ApiResponse.onFailure(HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage(), null);
         }
