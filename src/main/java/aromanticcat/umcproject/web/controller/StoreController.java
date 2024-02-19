@@ -23,8 +23,7 @@ public class StoreController {
     @ApiOperation(value = "사용자 코인 조회 API")
     public ApiResponse<Integer> getUserCoin(){
         try {
-//            String userEmail = memberService.getUserInfo().getEmail();
-            String userEmail = "ddd@dd.dd";
+            String userEmail = memberService.getUserInfo().getEmail();
 
             Integer userCoin = storeService.findUserCoin(userEmail);
 
@@ -44,8 +43,7 @@ public class StoreController {
             @RequestParam(defaultValue = "16") int pageSize,
             @RequestParam(defaultValue = "latest") String sort) {
         try {
-//            String userEmail = memberService.getUserInfo().getEmail();
-            String userEmail = "ddd@dd.dd";
+            String userEmail = memberService.getUserInfo().getEmail();
 
             Page<StoreResponseDTO.LetterPaperResultDTO> letterPaperPage = storeService.findLetterPaperList(userEmail, page, pageSize, sort);
 
@@ -66,8 +64,7 @@ public class StoreController {
             @RequestParam(defaultValue = "15") int pageSize,
             @RequestParam(defaultValue = "latest") String sort) {
         try {
-//            String userEmail = memberService.getUserInfo().getEmail();
-            String userEmail = "ddd@dd.dd";
+            String userEmail = memberService.getUserInfo().getEmail();
 
             Page<StoreResponseDTO.StampResultDTO> stampPage = storeService.findStampList(userEmail, page, pageSize, sort);
 
