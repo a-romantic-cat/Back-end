@@ -1,9 +1,6 @@
 package aromanticcat.umcproject.entity;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -11,8 +8,9 @@ import java.util.List;
 
 @Entity
 @Getter
-@Setter
-@RequiredArgsConstructor
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "stamp")
 public class Stamp extends BaseEntity {
 
