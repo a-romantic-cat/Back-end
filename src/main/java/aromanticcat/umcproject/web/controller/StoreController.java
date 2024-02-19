@@ -11,8 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/store")
 @RequiredArgsConstructor
@@ -63,7 +61,7 @@ public class StoreController {
                     "페이징을 포함합니다. query String으로 page(기본값 0)와 pageSize(기본값 15)를 주세요. " +
                     "sort(정렬 방식, 기본값 'latest')를 주세요. 정렬 방식은 'alphabetical', 'popular', " +
                     "'latest', 'low_price', 'high_price' 중 하나입니다.")
-    public ApiResponse<List<StoreResponseDTO.StampResultDTO>> getAllStampList(
+    public ApiResponse<Page<StoreResponseDTO.StampResultDTO>> getAllStampList(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "15") int pageSize,
             @RequestParam(defaultValue = "latest") String sort) {
@@ -71,9 +69,9 @@ public class StoreController {
 //            String userEmail = memberService.getUserInfo().getEmail();
             String userEmail = "ddd@dd.dd";
 
-            List<StoreResponseDTO.StampResultDTO> stampList = storeService.findStampList(userEmail, page, pageSize, sort);
+            Page<StoreResponseDTO.StampResultDTO> stampPage = storeService.findStampList(userEmail, page, pageSize, sort);
 
-            return ApiResponse.onSuccess(stampList);
+            return ApiResponse.onSuccess(stampPage);
         } catch (Exception e) {
             return ApiResponse.onFailure(HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage(), null);
         }

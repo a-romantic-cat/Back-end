@@ -142,7 +142,7 @@ public class StoreServiceImpl implements StoreService{
 
     @Override
     @Transactional
-    public List<StoreResponseDTO.StampResultDTO> findStampList(String email, int page, int pageSize, String sort){
+    public Page<StoreResponseDTO.StampResultDTO> findStampList(String email, int page, int pageSize, String sort){
         // 사용자가 구매한 아이템 목록 조회
         List<AcquiredItem> acquiredItemList = acquiredItemRepository.findByMemberEmail(email);
 
@@ -165,60 +165,75 @@ public class StoreServiceImpl implements StoreService{
     }
 
 
-    private List<StoreResponseDTO.StampResultDTO> findStampListSortedAlphabetically(int page, int pageSize, List<AcquiredItem> acquiredItemList) {
+    private Page<StoreResponseDTO.StampResultDTO> findStampListSortedAlphabetically(int page, int pageSize, List<AcquiredItem> acquiredItemList) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by("name").ascending());
         return fetchAndConvertToStampResponseDTOs(pageable, acquiredItemList);
     }
 
-    private List<StoreResponseDTO.StampResultDTO> findStampListSortedByPopularity(int page, int pageSize, List<AcquiredItem> acquiredItemList) {
+    private Page<StoreResponseDTO.StampResultDTO> findStampListSortedByPopularity(int page, int pageSize, List<AcquiredItem> acquiredItemList) {
+        // 모든 사용자의 구매 리스트 조회
         List<AcquiredItem> allAcquiredItems = acquiredItemRepository.findAll();
+
+        //편지지가 하나도 구매되지 않은 경우 최신순으로 정렬하여 반환
+        if(allAcquiredItems.isEmpty()){
+            return findStampListSortedByLatest(page, pageSize, acquiredItemList);
+        }
+
+        //인기순으로 정렬된 편지지 페이지 조회
         Pageable pageable = PageRequest.of(page, pageSize);
-        List<Stamp> StampList = fetchAndSortStampByPopularity(pageable, allAcquiredItems);
-        return convertToStampResponseDTOs(StampList, acquiredItemList);
+        Page<Stamp> stampPage = fetchAndSortStampByPopularity(pageable, allAcquiredItems);
+
+        return convertToStampResponseDTOs(stampPage, acquiredItemList);
     }
 
-    private List<Stamp> fetchAndSortStampByPopularity (Pageable pageable, List<AcquiredItem> allAcquiredItems){
+    private Page<Stamp> fetchAndSortStampByPopularity (Pageable pageable, List<AcquiredItem> allAcquiredItems){
 
-        Map<Stamp, Long> stampPopularityMap = allAcquiredItems.stream()
+        //우표를 인기순으로 정렬
+        Map<Stamp, Long> StampPopularityMap = allAcquiredItems.stream()
                 .collect(Collectors.groupingBy(AcquiredItem::getStamp, Collectors.counting()));
 
-        List<Stamp> sortedStamps = stampPopularityMap.entrySet().stream()
-                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                .map(Map.Entry::getKey)
+        //인기도가 같은 경우 최신순으로 정렬되도록 조정
+        Comparator<Stamp> comparator = Comparator.comparing((Stamp stamp) ->StampPopularityMap.getOrDefault(stamp, 0L))
+                .thenComparing(Stamp::getCreatedAt).reversed();
+
+        List<Stamp> sortedStamps = StampPopularityMap.keySet().stream()
+                .sorted(comparator)
                 .collect(Collectors.toList());
 
         int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), sortedStamps.size());
-        return sortedStamps.subList(start, end);
+
+        return new PageImpl<>(sortedStamps.subList(start, end), pageable, sortedStamps.size());
+
     }
 
 
-    private List<StoreResponseDTO.StampResultDTO> findStampListSortedByLatest(int page, int pageSize, List<AcquiredItem> acquiredItemList) {
+    private Page<StoreResponseDTO.StampResultDTO> findStampListSortedByLatest(int page, int pageSize, List<AcquiredItem> acquiredItemList) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by("createdAt").descending());
         return fetchAndConvertToStampResponseDTOs(pageable, acquiredItemList);
     }
-    private List<StoreResponseDTO.StampResultDTO> findStampListSortedByLowPrice(int page, int pageSize, List<AcquiredItem> acquiredItemList) {
+    private Page<StoreResponseDTO.StampResultDTO> findStampListSortedByLowPrice(int page, int pageSize, List<AcquiredItem> acquiredItemList) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by("price").ascending());
         return fetchAndConvertToStampResponseDTOs(pageable, acquiredItemList);
     }
-    private List<StoreResponseDTO.StampResultDTO> findStampListSortedByHighPrice(int page, int pageSize, List<AcquiredItem> acquiredItemList) {
+    private Page<StoreResponseDTO.StampResultDTO> findStampListSortedByHighPrice(int page, int pageSize, List<AcquiredItem> acquiredItemList) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by("price").descending());
         return fetchAndConvertToStampResponseDTOs(pageable, acquiredItemList);
     }
 
 
-    private List<StoreResponseDTO.StampResultDTO> fetchAndConvertToStampResponseDTOs(Pageable pageable, List<AcquiredItem> acquiredItemList) {
+    private Page<StoreResponseDTO.StampResultDTO> fetchAndConvertToStampResponseDTOs(Pageable pageable, List<AcquiredItem> acquiredItemList) {
         Page<Stamp> StampPage = stampRepository.findAll(pageable);
-        return convertToStampResponseDTOs(StampPage.getContent(), acquiredItemList);
+
+        return convertToStampResponseDTOs(StampPage, acquiredItemList);
     }
 
-    private List<StoreResponseDTO.StampResultDTO> convertToStampResponseDTOs(List<Stamp> stampList, List<AcquiredItem> acquiredItemList){
-        return stampList.stream()
-                .map(stamp -> StoreConverter.toStampResultDTO(stamp, acquiredItemList))
-                .collect(Collectors.toList());
-    }
-
-
+    private Page<StoreResponseDTO.StampResultDTO> convertToStampResponseDTOs(Page<Stamp> stampPage, List<AcquiredItem> acquiredItemList){
+        List<StoreResponseDTO.StampResultDTO> content = stampPage.getContent().stream()
+                    .map(stamp -> StoreConverter.toStampResultDTO(stamp, acquiredItemList))
+                    .collect(Collectors.toList());
+        return new PageImpl<>(content, stampPage.getPageable(), stampPage.getTotalElements());
+}
 
 
     @Override
