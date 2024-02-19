@@ -10,6 +10,7 @@ import aromanticcat.umcproject.repository.MyStampRepository;
 import aromanticcat.umcproject.web.dto.MyCollectionResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,18 +31,19 @@ public class MyCollectionServiceImpl implements MyCollectionService {
 
     @Override
     @Transactional
-    public List<MyCollectionResponseDTO.AcquiredLetterPaperResultDTO> findLetterPaperList(String email, int page, int pageSize, boolean onlyMyDesign) {
+    public Page<MyCollectionResponseDTO.AcquiredLetterPaperResultDTO> findLetterPaperList(String email, int page, int pageSize, boolean onlyMyDesign) {
         Pageable pageable = PageRequest.of(page, pageSize);
         List<MyCollectionResponseDTO.AcquiredLetterPaperResultDTO> responseDTOs;
 
         if(onlyMyDesign) {
             Page<MyLetterPaper> myLetterPaperPage = myLetterPaperRepository.findByMemberEmail(email, pageable);
-            List<MyLetterPaper> myLetterPaperList = myLetterPaperPage.getContent();
 
-            responseDTOs = myLetterPaperList.stream()
+            List<MyCollectionResponseDTO.AcquiredLetterPaperResultDTO> myLetterPaperDTOs = myLetterPaperPage.getContent().stream()
                     .map(myLetterPaper -> MyCollectionConverter.toMyLetterPaperResultDTO(myLetterPaper))
                     .collect(Collectors.toList());
-        }else {
+
+            return new PageImpl<>(myLetterPaperDTOs, pageable, myLetterPaperPage.getTotalElements());
+        } else {
             // 사용자가 구매한 편지지 목록 조회
             Page<AcquiredItem> acquiredLetterPaperPage = acquiredItemRepository.findByMemberEmailAndLetterPaperIdIsNotNull(email, pageable);
             List<AcquiredItem> acquiredLetterPaperList = acquiredLetterPaperPage.getContent();
@@ -62,26 +64,30 @@ public class MyCollectionServiceImpl implements MyCollectionService {
             responseDTOs = new ArrayList<>();
             responseDTOs.addAll(myLetterPaperDTOs);
             responseDTOs.addAll(acquiredLetterPaperDTOs);
+            return new PageImpl<>(responseDTOs, pageable, myLetterPaperPage.getTotalElements() + acquiredLetterPaperPage.getTotalElements());
+
         }
-        return responseDTOs;
+
+
 
     }
 
     @Override
     @Transactional
-    public List<MyCollectionResponseDTO.AcquiredStampResultDTO> findStampList(String email, int page, int pageSize, boolean onlyMyDesign) {
+    public Page<MyCollectionResponseDTO.AcquiredStampResultDTO> findStampList(String email, int page, int pageSize, boolean onlyMyDesign) {
         Pageable pageable = PageRequest.of(page, pageSize);
         List<MyCollectionResponseDTO.AcquiredStampResultDTO> responseDTOs;
 
         if(onlyMyDesign){
             Page<MyStamp> myStampPage = myStampRepository.findByMemberEmail(email, pageable);
 
-            List<MyStamp> myStampList = myStampPage.getContent();
-
-            responseDTOs = myStampList.stream()
+            List<MyCollectionResponseDTO.AcquiredStampResultDTO> myStampDTOs = myStampPage.getContent().stream()
                     .map(myStamp -> MyCollectionConverter.toMyStampResultDTO(myStamp))
                     .collect(Collectors.toList());
-        }else{
+
+            return new PageImpl<>(myStampDTOs, pageable, myStampPage.getTotalElements());
+
+    }else{
             // 사용자가 구매한 우표 목록 조회
             Page<AcquiredItem> acquiredStampPage = acquiredItemRepository.findByMemberEmailAndStampIdIsNotNull(email, pageable);
             List<AcquiredItem> acquiredStampList = acquiredStampPage.getContent();
@@ -102,9 +108,10 @@ public class MyCollectionServiceImpl implements MyCollectionService {
             responseDTOs = new ArrayList<>();
             responseDTOs.addAll(myStampDTOs);
             responseDTOs.addAll(acquiredStampDTOs);
-        }
 
-        return responseDTOs;
+            return new PageImpl<>(responseDTOs, pageable, myStampPage.getTotalElements() + acquiredStampPage.getTotalElements());
+
+        }
 
     }
 
