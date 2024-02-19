@@ -12,10 +12,7 @@ import aromanticcat.umcproject.repository.MemberRepository;
 import aromanticcat.umcproject.repository.StampRepository;
 import aromanticcat.umcproject.web.dto.store.StoreResponseDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -53,7 +50,7 @@ public class StoreServiceImpl implements StoreService{
 
     @Override
     @Transactional
-    public List<StoreResponseDTO.LetterPaperResultDTO> findLetterPaperList(String email, int page, int pageSize, String sort) {
+    public Page<StoreResponseDTO.LetterPaperResultDTO> findLetterPaperList(String email, int page, int pageSize, String sort) {
         // 사용자가 구매한 아이템 목록 조회
         List<AcquiredItem> acquiredItemList = acquiredItemRepository.findByMemberEmail(email);
 
@@ -73,57 +70,73 @@ public class StoreServiceImpl implements StoreService{
 
         }
     }
-    private List<StoreResponseDTO.LetterPaperResultDTO> findLetterPaperListSortedAlphabetically(int page, int pageSize, List<AcquiredItem> acquiredItemList) {
+    private Page<StoreResponseDTO.LetterPaperResultDTO> findLetterPaperListSortedAlphabetically(int page, int pageSize, List<AcquiredItem> acquiredItemList) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by("name").ascending());
         return fetchAndConvertToResponseDTOs(pageable, acquiredItemList);
     }
 
-    private List<StoreResponseDTO.LetterPaperResultDTO> findLetterPaperListSortedByPopularity(int page, int pageSize, List<AcquiredItem> acquiredItemList) {
+    private Page<StoreResponseDTO.LetterPaperResultDTO> findLetterPaperListSortedByPopularity(int page, int pageSize, List<AcquiredItem> acquiredItemList) {
+        // 모든 사용자의 구매 리스트 조회
         List<AcquiredItem> allAcquiredItems = acquiredItemRepository.findAll();
+
+        //편지지가 하나도 구매되지 않은 경우 최신순으로 정렬하여 반환
+        if(allAcquiredItems.isEmpty()){
+            return findLetterPaperListSortedByLatest(page, pageSize, acquiredItemList);
+        }
+
+        //인기순으로 정렬된 편지지 페이지 조회
         Pageable pageable = PageRequest.of(page, pageSize);
-        List<LetterPaper> letterPaperList = fetchAndSortByPopularity(pageable, allAcquiredItems);
-        return convertToResponseDTOs(letterPaperList, acquiredItemList);
+        Page<LetterPaper> letterPaperPage = fetchAndSortByPopularity(pageable, allAcquiredItems);
+
+        return convertToResponseDTOs(letterPaperPage, acquiredItemList);
     }
 
-    private List<LetterPaper> fetchAndSortByPopularity(Pageable pageable, List<AcquiredItem> allAcquiredItems){
+    private Page<LetterPaper> fetchAndSortByPopularity(Pageable pageable, List<AcquiredItem> allAcquiredItems){
 
+        //편지지를 인기순으로 정렬
         Map<LetterPaper, Long> letterPaperPopularityMap = allAcquiredItems.stream()
                 .collect(Collectors.groupingBy(AcquiredItem::getLetterPaper, Collectors.counting()));
 
-        List<LetterPaper> sortedLetterPapers = letterPaperPopularityMap.entrySet().stream()
-                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                .map(Map.Entry::getKey)
+        //인기도가 같은 경우 최신순으로 정렬되도록 조정
+        Comparator<LetterPaper> comparator = Comparator.comparing((LetterPaper lp) ->letterPaperPopularityMap.getOrDefault(lp, 0L))
+                .thenComparing(LetterPaper::getCreatedAt).reversed();
+
+        List<LetterPaper> sortedLetterPapers = letterPaperPopularityMap.keySet().stream()
+                .sorted(comparator)
                 .collect(Collectors.toList());
 
         int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), sortedLetterPapers.size());
-        return sortedLetterPapers.subList(start, end);
+
+        return new PageImpl<>(sortedLetterPapers.subList(start, end), pageable, sortedLetterPapers.size());
     }
 
 
-    private List<StoreResponseDTO.LetterPaperResultDTO> findLetterPaperListSortedByLatest(int page, int pageSize, List<AcquiredItem> acquiredItemList) {
+    private Page<StoreResponseDTO.LetterPaperResultDTO> findLetterPaperListSortedByLatest(int page, int pageSize, List<AcquiredItem> acquiredItemList) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by("createdAt").descending());
         return fetchAndConvertToResponseDTOs(pageable, acquiredItemList);
     }
-    private List<StoreResponseDTO.LetterPaperResultDTO> findLetterPaperListSortedByLowPrice(int page, int pageSize, List<AcquiredItem> acquiredItemList) {
+    private Page<StoreResponseDTO.LetterPaperResultDTO> findLetterPaperListSortedByLowPrice(int page, int pageSize, List<AcquiredItem> acquiredItemList) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by("price").ascending());
         return fetchAndConvertToResponseDTOs(pageable, acquiredItemList);
     }
-    private List<StoreResponseDTO.LetterPaperResultDTO> findLetterPaperListSortedByHighPrice(int page, int pageSize, List<AcquiredItem> acquiredItemList) {
+    private Page<StoreResponseDTO.LetterPaperResultDTO> findLetterPaperListSortedByHighPrice(int page, int pageSize, List<AcquiredItem> acquiredItemList) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by("price").descending());
         return fetchAndConvertToResponseDTOs(pageable, acquiredItemList);
     }
 
 
-    private List<StoreResponseDTO.LetterPaperResultDTO> fetchAndConvertToResponseDTOs(Pageable pageable, List<AcquiredItem> acquiredItemList) {
+    private Page<StoreResponseDTO.LetterPaperResultDTO> fetchAndConvertToResponseDTOs(Pageable pageable, List<AcquiredItem> acquiredItemList) {
         Page<LetterPaper> letterPaperPage = letterPaperRepository.findAll(pageable);
-        return convertToResponseDTOs(letterPaperPage.getContent(), acquiredItemList);
+
+        return convertToResponseDTOs(letterPaperPage, acquiredItemList);
     }
 
-    private List<StoreResponseDTO.LetterPaperResultDTO> convertToResponseDTOs(List<LetterPaper> letterPaperList, List<AcquiredItem> acquiredItemList){
-        return letterPaperList.stream()
-            .map(letterPaper -> StoreConverter.toLetterPaperResultDTO(letterPaper, acquiredItemList))
-            .collect(Collectors.toList());
+    private Page<StoreResponseDTO.LetterPaperResultDTO> convertToResponseDTOs(Page<LetterPaper> letterPaperPage, List<AcquiredItem> acquiredItemList){
+        List<StoreResponseDTO.LetterPaperResultDTO> content = letterPaperPage.getContent().stream()
+                .map(letterPaper -> StoreConverter.toLetterPaperResultDTO(letterPaper, acquiredItemList))
+                .collect(Collectors.toList());
+        return new PageImpl<>(content, letterPaperPage.getPageable(), letterPaperPage.getTotalElements());
     }
 
 
@@ -149,18 +162,6 @@ public class StoreServiceImpl implements StoreService{
 
         }
 
-
-//        // 모든 우표 목록 조회
-//        Pageable pageable = PageRequest.of(page, pageSize);
-//        Page<Stamp> allStampPage = stampRepository.findAll(pageable);
-//
-//        List<Stamp> allStampList = allStampPage.getContent();
-//
-//        List<StoreResponseDTO.StampResultDTO> responseDTOs = allStampList.stream()
-//                .map(stamp -> StoreConverter.toStampResultDTO(stamp, acquiredItemist))
-//                .collect(Collectors.toList());
-//
-//        return responseDTOs;
     }
 
 

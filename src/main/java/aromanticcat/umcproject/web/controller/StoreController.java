@@ -6,6 +6,7 @@ import aromanticcat.umcproject.service.storeService.StoreService;
 import aromanticcat.umcproject.web.dto.store.StoreResponseDTO;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,7 +41,7 @@ public class StoreController {
                     "페이징을 포함합니다. query String으로 page(기본값 0)와 pageSize(기본값 16)를 주세요. " +
                     "sort(정렬 방식, 기본값 'latest')를 주세요. 정렬 방식은 'alphabetical', 'popular', " +
                     "'latest', 'low_price', 'high_price' 중 하나입니다.")
-    public ApiResponse<List<StoreResponseDTO.LetterPaperResultDTO>> getAllLetterPaperList(
+    public ApiResponse<Page<StoreResponseDTO.LetterPaperResultDTO>> getAllLetterPaperList(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "16") int pageSize,
             @RequestParam(defaultValue = "latest") String sort) {
@@ -48,9 +49,9 @@ public class StoreController {
 //            String userEmail = memberService.getUserInfo().getEmail();
             String userEmail = "ddd@dd.dd";
 
-            List<StoreResponseDTO.LetterPaperResultDTO> letterPaperList = storeService.findLetterPaperList(userEmail, page, pageSize, sort);
+            Page<StoreResponseDTO.LetterPaperResultDTO> letterPaperPage = storeService.findLetterPaperList(userEmail, page, pageSize, sort);
 
-            return ApiResponse.onSuccess(letterPaperList);
+            return ApiResponse.onSuccess(letterPaperPage);
         } catch (Exception e) {
             return ApiResponse.onFailure(HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage(), null);
         }
