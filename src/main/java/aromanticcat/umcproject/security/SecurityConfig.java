@@ -46,7 +46,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated() // 그 외의 모든 요청은 인증이 필요하다.
                 .and()
                 .oauth2Login() // OAuth2 로그인 설정시작
-                .loginPage("https://dev.nangmancat.shop:443/login")
+                .loginPage("https://dev.nangmancat.shop/login")
                 .userInfoEndpoint().userService(customOAuth2UserService) // OAuth2 로그인시 사용자 정보를 가져오는 엔드포인트와 사용자 서비스를 설정
                 .and()
                 .failureHandler(oAuth2LoginFailureHandler) // OAuth2 로그인 실패시 처리할 핸들러를 지정해준다.

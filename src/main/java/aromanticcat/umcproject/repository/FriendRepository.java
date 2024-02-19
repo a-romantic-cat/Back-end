@@ -14,10 +14,8 @@ import java.util.Set;
 
 public interface FriendRepository extends JpaRepository<Friend, Long> {
 
-    @Query("SELECT f FROM Friend f WHERE f.member.id = :memberId AND f.friendStatus IN (:friendStatus)")
-    Page<Friend> findFriendByMemberAndFriendStatus(Member member, Pageable pageable, Set<FriendStatus> friendStatus);
-
-    Page<Friend> findFriendByMemberAndFriendStatus(Member member, Pageable pageable, FriendStatus friendStatus);
+    @Query("SELECT f FROM Friend f WHERE f.member = :member AND f.friendStatus IN (:friendStatus)")
+    Page<Friend> findFriendByMemberAndFriendStatus(Member member, Set<FriendStatus> friendStatus, Pageable pageable);
 
     List<Friend> findFriendByMemberAndFriendName(Member member, String friendName);
 

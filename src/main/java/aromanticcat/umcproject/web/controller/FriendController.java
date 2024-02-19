@@ -29,17 +29,19 @@ public class FriendController {
     private final MemberService memberService;
 
     @GetMapping("/")
-    @ApiOperation(value = "사용자의 주소록에 있는 친구들 조회 API", notes = "페이징 포함을 포함합니다, query String으로 page 번호를 주세요.")
-    @Parameters({
-            @Parameter(name = "page", description = "페이지 번호, 0번이 1번 페이지 입니다.")
-    })
+    @ApiOperation(
+            value = "사용자의 주소록에 있는 친구들 조회 API",
+            notes = "페이징 포함을 포함합니다, query String으로 page 번호를 주세요, 0번이 1번 페이지입니다." +
+                    "sort(정렬 방식, 기본값 'alphabetical')를 주세요." +
+                    "정렬 방식은 'alphabetical', 'mailbox_id', 'recent', 'long_time' 중 하나입니다.")
     public ApiResponse<List<FriendResponseDTO.FriendInfoDTO>> getFriendList(
-            @RequestParam(value = "page", defaultValue = "0") Integer page) {
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "alphabetical") String sort) {
         try {
             String userEmail = memberService.getUserInfo().getEmail();
 
             // 요청 받은 페이지의 친구 수를 가져옴
-            List<FriendResponseDTO.FriendInfoDTO> friendDTOList = friendQueryService.findFriendList(userEmail, page);
+            List<FriendResponseDTO.FriendInfoDTO> friendDTOList = friendQueryService.findFriendList(userEmail, page, sort);
 
             // 성공 응답 생성
             return ApiResponse.onSuccess(friendDTOList);
@@ -50,19 +52,20 @@ public class FriendController {
     }
 
     @GetMapping("/close-friends")
-    @ApiOperation(value = "사용자의 주소록에 있는 친한 친구들 조회 API", notes = "페이징 포함을 포함합니다, query String으로 page 번호를 주세요.")
-    @Parameters({
-            @Parameter(name = "page", description = "페이지 번호, 0번이 1번 페이지 입니다.")
-    })
+    @ApiOperation(
+            value = "사용자의 주소록에 있는 친한 친구들 조회 API",
+            notes = "페이징 포함을 포함합니다, query String으로 page 번호를 주세요. 0번이 1번 페이지입니다." +
+                    "sort(정렬 방식, 기본값 'alphabetical')를 주세요." +
+                    "정렬 방식은 'alphabetical', 'mailbox_id', 'recent', 'long_time' 중 하나입니다.")
     public ApiResponse<List<FriendResponseDTO.FriendInfoDTO>> getCloseFriendList(
-            @RequestParam(value = "page", defaultValue = "0") Integer page) {
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "alphabetical") String sort) {
 
         try {
             String userEmail = memberService.getUserInfo().getEmail();
 
             // 요청 받은 페이지의 친구 수를 가져옴
-            List<FriendResponseDTO.FriendInfoDTO> friendDTOList = friendQueryService.findCloseFriendList(userEmail,
-                    page);
+            List<FriendResponseDTO.FriendInfoDTO> friendDTOList = friendQueryService.findCloseFriendList(userEmail, page, sort);
 
             // 성공 응답 생성
             return ApiResponse.onSuccess(friendDTOList);

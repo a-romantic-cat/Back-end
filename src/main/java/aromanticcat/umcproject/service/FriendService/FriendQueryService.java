@@ -10,14 +10,13 @@ import java.util.Optional;
 
 public interface FriendQueryService {
 
-
     List<Friend> getFriendReceivedList(String userEmail);
 
     List<Friend> getFriendRequestedList(String userEmail);
 
-    List<FriendResponseDTO.FriendInfoDTO> findFriendList(String userEmail, Integer page);
+    List<FriendResponseDTO.FriendInfoDTO> findFriendList(String userEmail, Integer page, String sort);
 
-    List<FriendResponseDTO.FriendInfoDTO> findCloseFriendList(String userEmail, Integer page);
+    List<FriendResponseDTO.FriendInfoDTO> findCloseFriendList(String userEmail, Integer page, String sort);
 
     List<FriendResponseDTO.FriendInfoDTO> getFriendbyFriendName(String userEmail, String friendName);
 
