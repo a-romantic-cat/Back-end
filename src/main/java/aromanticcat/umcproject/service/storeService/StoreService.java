@@ -1,7 +1,9 @@
 package aromanticcat.umcproject.service.storeService;
 
 import aromanticcat.umcproject.web.dto.store.StoreResponseDTO;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface StoreService {
@@ -13,5 +15,11 @@ public interface StoreService {
     void purchasedLetterPaper(String email, Long letterPaperId);
 
     void purchasedStamp(String email, Long stampId);
+
+    Long uploadLetterPaper(MultipartFile file, String name, int price) throws IOException;
+    Long uploadStamp(MultipartFile file, String name, int price) throws IOException;
+
+    int findUserCoin(String email);
+
 
 }

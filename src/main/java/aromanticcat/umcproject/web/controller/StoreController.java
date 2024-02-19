@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -19,6 +20,20 @@ public class StoreController {
     private final StoreService storeService;
     private final MemberService memberService;
 
+    @GetMapping("/user-coin")
+    @ApiOperation(value = "사용자 코인 조회 API")
+    public ApiResponse<Integer> getUserCoin(){
+        try {
+//            String userEmail = memberService.getUserInfo().getEmail();
+            String userEmail = "ddd@dd.dd";
+
+            Integer userCoin = storeService.findUserCoin(userEmail);
+
+            return ApiResponse.onSuccess(userCoin);
+        } catch (Exception e) {
+            return ApiResponse.onFailure(HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage(), null);
+        }
+    }
     @GetMapping("/letter-papers")
     @ApiOperation(value = "상점 편지지 목록 조회 API",
             notes = "사용자가 이미 구매한 편지지는 가격을 null로 반환합니다. " +
@@ -30,7 +45,8 @@ public class StoreController {
             @RequestParam(defaultValue = "16") int pageSize,
             @RequestParam(defaultValue = "latest") String sort) {
         try {
-            String userEmail = memberService.getUserInfo().getEmail();
+//            String userEmail = memberService.getUserInfo().getEmail();
+            String userEmail = "ddd@dd.dd";
 
             List<StoreResponseDTO.LetterPaperResultDTO> letterPaperList = storeService.findLetterPaperList(userEmail, page, pageSize, sort);
 
@@ -51,7 +67,8 @@ public class StoreController {
             @RequestParam(defaultValue = "15") int pageSize,
             @RequestParam(defaultValue = "latest") String sort) {
         try {
-            String userEmail = memberService.getUserInfo().getEmail();
+//            String userEmail = memberService.getUserInfo().getEmail();
+            String userEmail = "ddd@dd.dd";
 
             List<StoreResponseDTO.StampResultDTO> stampList = storeService.findStampList(userEmail, page, pageSize, sort);
 
@@ -92,4 +109,31 @@ public class StoreController {
 
         }
     }
+
+    @PostMapping("/upload/letter-paper")
+    @ApiOperation(value = "편지지 업로드 API")
+    public ApiResponse<Long> uploadLetterPaper(@RequestPart(value = "img") MultipartFile file, @RequestParam("name") String name, @RequestParam("price") int price){
+        if (file != null) {
+            try {
+                return ApiResponse.onSuccess(storeService.uploadLetterPaper(file, name, price));
+            } catch (Exception e) {
+                return ApiResponse.onFailure(HttpStatus.INTERNAL_SERVER_ERROR.toString(), "file - exist, error", null); //바꾸기
+            }
+        }
+        return ApiResponse.onFailure(HttpStatus.INTERNAL_SERVER_ERROR.toString(), "file dosen't exist", null); //바꾸기
+    }
+
+    @PostMapping("/upload/stamp")
+    @ApiOperation(value = "우표 업로드 API")
+    public ApiResponse<Long> uploadStamp(@RequestPart(value = "img") MultipartFile file, @RequestParam("name") String name, @RequestParam("price") int price){
+        if (file != null) {
+            try {
+                return ApiResponse.onSuccess(storeService.uploadStamp(file, name, price));
+            } catch (Exception e) {
+                return ApiResponse.onFailure(HttpStatus.INTERNAL_SERVER_ERROR.toString(), "file - exist, error", null); //바꾸기
+            }
+        }
+        return ApiResponse.onFailure(HttpStatus.INTERNAL_SERVER_ERROR.toString(), "file dosen't exist", null); //바꾸기
+    }
+
 }

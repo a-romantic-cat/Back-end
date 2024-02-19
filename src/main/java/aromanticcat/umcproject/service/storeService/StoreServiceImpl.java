@@ -1,5 +1,6 @@
 package aromanticcat.umcproject.service.storeService;
 
+import aromanticcat.umcproject.S3.S3Service;
 import aromanticcat.umcproject.converter.StoreConverter;
 import aromanticcat.umcproject.entity.AcquiredItem;
 import aromanticcat.umcproject.entity.LetterPaper;
@@ -16,11 +17,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,6 +36,19 @@ public class StoreServiceImpl implements StoreService{
     private final StampRepository stampRepository;
     private final AcquiredItemRepository acquiredItemRepository;
     private final MemberRepository memberRepository;
+    private final S3Service s3Service;
+
+    @Override
+    @Transactional
+    public int findUserCoin(String email){
+        Optional<Member> optionalMember = memberRepository.findByEmail(email);
+
+        // Optional 객체가 비어있는 경우에 예외를 던지도록 설정
+        Member member = optionalMember.orElseThrow(() -> new RuntimeException("사용자가 없습니다."));
+
+        // 사용자가 존재하는 경우에는 해당 사용자의 코인을 반환
+        return member.getCoin();
+    }
 
 
     @Override
@@ -85,7 +102,7 @@ public class StoreServiceImpl implements StoreService{
 
 
     private List<StoreResponseDTO.LetterPaperResultDTO> findLetterPaperListSortedByLatest(int page, int pageSize, List<AcquiredItem> acquiredItemList) {
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("createdAt").ascending());
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("createdAt").descending());
         return fetchAndConvertToResponseDTOs(pageable, acquiredItemList);
     }
     private List<StoreResponseDTO.LetterPaperResultDTO> findLetterPaperListSortedByLowPrice(int page, int pageSize, List<AcquiredItem> acquiredItemList) {
@@ -176,7 +193,7 @@ public class StoreServiceImpl implements StoreService{
 
 
     private List<StoreResponseDTO.StampResultDTO> findStampListSortedByLatest(int page, int pageSize, List<AcquiredItem> acquiredItemList) {
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("createdAt").ascending());
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("createdAt").descending());
         return fetchAndConvertToStampResponseDTOs(pageable, acquiredItemList);
     }
     private List<StoreResponseDTO.StampResultDTO> findStampListSortedByLowPrice(int page, int pageSize, List<AcquiredItem> acquiredItemList) {
@@ -265,5 +282,31 @@ public class StoreServiceImpl implements StoreService{
         } else {
             throw new IllegalArgumentException("이미 해당 우표를 구매했습니다.");
         }
+    }
+
+    @Override
+    @Transactional
+    public Long uploadLetterPaper(MultipartFile file, String name, int price) throws IOException{
+        String url = s3Service.uploadFile1(file);
+        LetterPaper letterPaper = LetterPaper.builder()
+                .name(name)
+                .imageUrl(url)
+                .price(price)
+                .build();
+        letterPaperRepository.save(letterPaper);
+        return letterPaper.getId();
+    }
+
+    @Override
+    @Transactional
+    public Long uploadStamp(MultipartFile file, String name, int price) throws IOException{
+        String url = s3Service.uploadFile2(file);
+        Stamp stamp = Stamp.builder()
+                .name(name)
+                .imageUrl(url)
+                .price(price)
+                .build();
+        stampRepository.save(stamp);
+        return stamp.getId();
     }
 }
