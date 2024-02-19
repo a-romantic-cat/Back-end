@@ -1,16 +1,15 @@
 package aromanticcat.umcproject.service.nangmanLetterboxService;
 
 import aromanticcat.umcproject.entity.NangmanLetter;
-import aromanticcat.umcproject.web.dto.nangmanLetterbox.NangmanLetterboxRequestDTO;
 import aromanticcat.umcproject.web.dto.nangmanLetterbox.NangmanLetterBoxResponseDTO;
-
-import java.util.List;
+import aromanticcat.umcproject.web.dto.nangmanLetterbox.NangmanLetterboxRequestDTO;
+import org.springframework.data.domain.Page;
 
 public interface NangmanLetterboxService {
 
     NangmanLetter sendLetter(String email, NangmanLetterboxRequestDTO.SendLetterDTO requestDTO);
 
-    List<NangmanLetter> getLetterList(String email, int page, int pageSize);
+    Page<NangmanLetter> getLetterPage(String email, int page, int pageSize);
 
     NangmanLetter getLetter(Long nangmanLetterid);
 

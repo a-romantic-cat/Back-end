@@ -7,8 +7,8 @@ import aromanticcat.umcproject.entity.NangmanReply;
 import aromanticcat.umcproject.repository.MemberRepository;
 import aromanticcat.umcproject.repository.NangmanLetterRepository;
 import aromanticcat.umcproject.repository.NangmanReplyRepository;
-import aromanticcat.umcproject.web.dto.nangmanLetterbox.NangmanLetterboxRequestDTO;
 import aromanticcat.umcproject.web.dto.nangmanLetterbox.NangmanLetterBoxResponseDTO;
+import aromanticcat.umcproject.web.dto.nangmanLetterbox.NangmanLetterboxRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -53,14 +52,14 @@ public class NangmanLetterboxServiceImpl implements NangmanLetterboxService {
 
     @Override
     @Transactional
-    public List<NangmanLetter> getLetterList(String email, int page, int pageSize){
+    public Page<NangmanLetter> getLetterPage(String email, int page, int pageSize){
         // 페이지 번호와 페이지 크기를 이용하여 페이징된 편지 목록 조회
         Pageable pageable = PageRequest.of(page, pageSize);
 
         // 사용자가 쓴 고민편지 제외하고 목록 반환
         Page<NangmanLetter> letterPage = nangmanLetterRepository.findByHasResponseFalseAndMemberEmailNot(email, pageable);
 
-        return letterPage.getContent();
+        return letterPage;
     }
 
 

@@ -10,17 +10,10 @@ import aromanticcat.umcproject.web.dto.nangmanLetterbox.NangmanLetterBoxResponse
 import aromanticcat.umcproject.web.dto.nangmanLetterbox.NangmanLetterBoxResponseDTO.PreviewLetterResultDTO;
 import aromanticcat.umcproject.web.dto.nangmanLetterbox.NangmanLetterboxRequestDTO;
 import io.swagger.v3.oas.annotations.Operation;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/nangman-letterbox")
@@ -71,19 +64,17 @@ public class NangmanLetterboxController {
             description = "답장을 기다리는 편지 목록(본인이 쓴 편지 제외)을 조회하는 API입니다. " +
                     "각 편지 내용은 40자까지 제공합니다. " +
                     "페이징을 포함합니다. query String으로 page(기본값 0)와 pageSize(기본값 9)를 주세요.")
-    public ApiResponse<List<PreviewLetterResultDTO>> getLetterList(
+    public ApiResponse<Page<PreviewLetterResultDTO>> getLetterList(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "9") int pageSize) {
         try {
             String userEmail = memberService.getUserInfo().getEmail();
 
             //편지 페이지의 편지 목록 조회
-            List<NangmanLetter> letterList = nangmanLetterBoxService.getLetterList(userEmail, page, pageSize);
+            Page<NangmanLetter> letterList = nangmanLetterBoxService.getLetterPage(userEmail, page, pageSize);
 
             //편지 내용의 두 줄만 포함하도록 변환
-            List<NangmanLetterBoxResponseDTO.PreviewLetterResultDTO> letterSummaryDTOList = letterList.stream()
-                    .map(NangmanLetterBoxConverter::toPreviewLetterResultDTO)
-                    .collect(Collectors.toList());
+            Page<NangmanLetterBoxResponseDTO.PreviewLetterResultDTO> letterSummaryDTOList = letterList.map(NangmanLetterBoxConverter::toPreviewLetterResultDTO);
 
             //성공 응답 생성
             return ApiResponse.onSuccess(letterSummaryDTOList);
